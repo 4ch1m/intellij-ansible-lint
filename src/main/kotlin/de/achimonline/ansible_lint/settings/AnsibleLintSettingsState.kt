@@ -13,7 +13,7 @@ import com.intellij.util.xmlb.XmlSerializerUtil
 class AnsibleLintSettingsState : PersistentStateComponent<AnsibleLintSettingsState?> {
     var settings = AnsibleLintSettings()
 
-    override fun getState(): AnsibleLintSettingsState? {
+    override fun getState(): AnsibleLintSettingsState {
         return this
     }
 

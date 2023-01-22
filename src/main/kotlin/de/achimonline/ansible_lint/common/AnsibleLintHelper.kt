@@ -20,7 +20,7 @@ class AnsibleLintHelper {
             file: PsiFile,
             content: String
         ): Pair<File, File> {
-            val originalPathWithoutProjectBasePath = file.virtualFile.path.removePrefix(project!!.basePath!!)
+            val originalPathWithoutProjectBasePath = file.virtualFile.path.removePrefix(project.basePath!!)
             val parentDirectories = originalPathWithoutProjectBasePath.split(File.separator).dropLast(1)
 
             val tempDirectoryBasePath = createTempDirectory().pathString

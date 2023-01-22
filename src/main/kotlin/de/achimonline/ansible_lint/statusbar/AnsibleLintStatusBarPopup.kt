@@ -50,7 +50,7 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
     override fun getWidgetState(file: VirtualFile?): WidgetState {
         val settingsState = ApplicationManager.getApplication().getService(AnsibleLintSettingsState::class.java)
 
-        return if (
+        if (
             !settingsState.settings.onlyRunWhenConfigFilePresent ||
             AnsibleLintConfigFile.exists(project)
         ) {
@@ -66,6 +66,7 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
     }
 
     override fun createPopup(context: DataContext?): ListPopup {
+        @Suppress("DialogTitleCapitalization")
         return JBPopupFactory.getInstance().createActionGroupPopup(
             message("statusbar.popup.title"),
             actionGroup,
