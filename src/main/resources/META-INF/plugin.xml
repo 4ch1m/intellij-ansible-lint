@@ -1,0 +1,41 @@
+<idea-plugin>
+    <id>de.achimonline.ansible_lint.ansible-lint</id>
+    <name>Ansible Lint</name>
+
+    <vendor
+        email="intellij@achimonline.de"
+        url="https://www.achimonline.de">
+            Achim Seufert
+    </vendor>
+
+    <description><![CDATA[
+    <a href="https://ansible-lint.readthedocs.io/">Ansible Lint</a> integration with automatic/continuous annotation of errors, warnings, and infos while editing.
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationConfigurable
+                id="AnsibleLint"
+                groupId="tools"
+                key="settings.display.name"
+                instance="de.achimonline.ansible_lint.settings.AnsibleLintConfigurable"/>
+
+        <externalAnnotator
+                language="yaml"
+                implementationClass="de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator"/>
+
+        <applicationService serviceImplementation="de.achimonline.ansible_lint.settings.AnsibleLintSettingsState"/>
+
+        <notificationGroup
+                id="ANSIBLE_LINT"
+                displayType="BALLOON"
+                key="notifications.group.title"/>
+
+        <statusBarWidgetFactory id="pythonInterpreterWidget"
+                                implementation="de.achimonline.ansible_lint.statusbar.AnsibleLintStatusBarWidgetFactory"
+                                order="after CodeStyleStatusBarWidget"/>
+    </extensions>
+
+    <resource-bundle>messages.AnsibleLintBundle</resource-bundle>
+</idea-plugin>
