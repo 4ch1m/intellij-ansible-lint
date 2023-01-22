@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>de.achimonline.ansible_lint.ansible-lint</id>
+    <id>de.achimonline.ansible_lint</id>
     <name>Ansible Lint</name>
 
     <vendor
