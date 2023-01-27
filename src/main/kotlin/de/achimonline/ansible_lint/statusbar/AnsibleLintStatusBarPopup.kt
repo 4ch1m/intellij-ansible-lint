@@ -82,8 +82,12 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
 
     override fun isEnabledForFile(file: VirtualFile?): Boolean {
         if (file != null) {
-            return listOf(".yaml", ".yml").any {
-                file.toNioPath().pathString.lowercase().endsWith(it)
+            try {
+                return listOf(".yaml", ".yml").any {
+                    file.toNioPath().pathString.lowercase().endsWith(it)
+                }
+            } catch (_: UnsupportedOperationException) {
+                // do nothing
             }
         }
 

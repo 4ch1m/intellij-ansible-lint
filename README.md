@@ -10,6 +10,7 @@
 * [Setup](#setup)
 * [License](#license)
 * [Credits](#credits)
+* [Donate](#donate) :heart:
 
 ## Screenshots
 
@@ -63,3 +64,8 @@ Please read the [license](LICENSE) file.
 
 * _Ansible_ logo - [simpleicons.org](https://simpleicons.org/?q=ansible)
 * _Check_ pictogram - [Bootstrap Icons](https://icons.getbootstrap.com/icons/check-circle-fill/)
+* _Heart_ icon - [FontAwesome](https://fontawesome.com/icons/heart?s=solid&f=classic)
+
+## Donate
+
+If you like this plugin, please consider a [donation](https://paypal.me/AchimSeufert). Thank you!
