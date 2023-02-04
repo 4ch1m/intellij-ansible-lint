@@ -9,7 +9,7 @@ class AnsibleLintNotification {
     private fun notify(project: Project?, notificationType: NotificationType, content: String?, action: AnAction?) {
         val notification = NotificationGroupManager
             .getInstance()
-            .getNotificationGroup("ANSIBLE_LINT")
+            .getNotificationGroup("AnsibleLint")
             .createNotification(content!!, notificationType)
 
             if (action != null) {

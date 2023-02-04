@@ -27,8 +27,9 @@
 
         <applicationService serviceImplementation="de.achimonline.ansible_lint.settings.AnsibleLintSettingsState"/>
 
+        <!--suppress PluginXmlCapitalization -->
         <notificationGroup
-                id="ANSIBLE_LINT"
+                id="AnsibleLint"
                 displayType="BALLOON"
                 key="notifications.group.title"/>
 

@@ -15,6 +15,9 @@ import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
+import de.achimonline.ansible_lint.annotator.actions.AnsibleLintAnnotatorClipboardAction
+import de.achimonline.ansible_lint.annotator.actions.AnsibleLintAnnotatorNoQAAction
+import de.achimonline.ansible_lint.annotator.actions.AnsibleLintAnnotatorOpenUrlAction
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
 import de.achimonline.ansible_lint.parser.AnsibleLintItem
 import de.achimonline.ansible_lint.parser.AnsibleLintParser
@@ -124,10 +127,15 @@ class AnsibleLintAnnotator : ExternalAnnotator<AnsibleLintAnnotator.CollectedInf
                     """
                         ${it.description}
                         ${if (it.content.body.isNotEmpty()) "(${it.content.body})" else ""}
-                        "${it.check_name}"
-                        [${it.url}]
+                        |
+                        Rule: ${it.check_name}
                     """.trimIndent()
-                ).range(TextRange(startOffset + startOffsetDelta, endOffset)).create()
+                )
+                    .range(TextRange(startOffset + startOffsetDelta, endOffset))
+                    .withFix(AnsibleLintAnnotatorOpenUrlAction(it.url))
+                    .withFix(AnsibleLintAnnotatorNoQAAction(line, it.check_name))
+                    .withFix(AnsibleLintAnnotatorClipboardAction(it.check_name))
+                    .create()
             }
         }
     }

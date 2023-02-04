@@ -7,7 +7,6 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.SimpleTextAttributes
-import com.intellij.ui.dsl.builder.TopGap
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
@@ -58,10 +57,11 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                     comment("<icon src='AllIcons.General.Information'>&nbsp;${message("settings.group.integration.only-run-when-config-file-present.recommended")}")
                 }
             }
-            separator()
-            row {
-                icon(heartIcon)
-                text(message("settings.donation", "https://paypal.me/AchimSeufert"))
+            group {
+                row {
+                    icon(heartIcon)
+                    text(message("settings.donation", "https://paypal.me/AchimSeufert"))
+                }
             }
         }
     }
