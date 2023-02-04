@@ -14,11 +14,27 @@
 
 ## Screenshots
 
+#### Annotations on all tasks with issues:
+
 > ![editor1](screenshots/editor1.png)
+
+#### Concrete details on mouseover:
 
 > ![editor2](screenshots/editor2.png)
 
+#### Different visualization based on severity:
+
 > ![editor3](screenshots/editor3.png)
+
+#### Quick actions:
+
+> ![editor4](screenshots/editor4.png)
+
+> ![editor5](screenshots/editor5.png)
+
+#### Security relevant information:
+
+> ![editor6](screenshots/editor6.png)
 
 ## Requirements
 
