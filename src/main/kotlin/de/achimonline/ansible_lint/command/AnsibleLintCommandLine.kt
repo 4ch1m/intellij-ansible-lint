@@ -8,6 +8,7 @@ import kotlin.io.path.pathString
 class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = AnsibleLintSettings()) {
     fun createVersionCheckProcess(workingDirectory: String): Process {
         return GeneralCommandLine()
+            .withEnvironment(System.getenv())
             .withWorkDirectory(workingDirectory)
             .withExePath(settings.executable)
             .withParameters(listOf(

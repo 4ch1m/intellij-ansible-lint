@@ -1,3 +1,8 @@
+## [1.2.1]
+
+### Fixed
+- use the system environment vars when running `ansible-lint`
+
 ## [1.2.0]
 
 ### Added
