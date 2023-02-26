@@ -12,6 +12,9 @@ import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
+import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
+import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileIgnore
+import de.achimonline.ansible_lint.common.AnsibleLintHelper
 import javax.swing.JButton
 import javax.swing.JEditorPane
 
@@ -51,10 +54,20 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
             group(message("settings.group.integration")) {
                 row {
                     checkBox(message("settings.group.integration.only-run-when-config-file-present"))
-                        .comment(message("settings.group.integration.only-run-when-config-file-present.comment"))
+                        .comment(
+                            message("settings.group.integration.only-run-when-config-file-present.comment",
+                                AnsibleLintCommandFileConfig.DEFAULT,
+                                AnsibleLintCommandFileConfig.ALTERNATIVE))
                         .bindSelected(settings::onlyRunWhenConfigFilePresent)
 
                     comment("<icon src='AllIcons.General.Information'>&nbsp;${message("settings.group.integration.only-run-when-config-file-present.recommended")}")
+                }
+                row {
+                    checkBox(message("settings.group.integration.visualize-ignored-rules"))
+                        .comment(message("settings.group.integration.visualize-ignored-rules.comment",
+                            AnsibleLintCommandFileIgnore.DEFAULT,
+                            AnsibleLintCommandFileIgnore.ALTERNATIVE))
+                        .bindSelected(settings::visualizeIgnoredRules)
                 }
             }
             group {
@@ -73,7 +86,8 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
         testStatus.text = ""
 
         try {
-            val versionCheckProcess = AnsibleLintCommandLine(settings).createVersionCheckProcess(ProjectUtil.getActiveProject()!!.basePath!!)
+            val projectBasePath = AnsibleLintHelper.getProjectBasePath(ProjectUtil.getActiveProject()!!)
+            val versionCheckProcess = AnsibleLintCommandLine(settings).createVersionCheckProcess(projectBasePath)
             val output = AnsibleLintCommandLine.getOutput(versionCheckProcess)
 
             if (versionCheckProcess.exitValue() == 0 && output.first.contains("ansible-lint")) {

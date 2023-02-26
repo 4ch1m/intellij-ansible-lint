@@ -10,12 +10,8 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.impl.status.EditorBasedStatusBarPopup
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
-import de.achimonline.ansible_lint.command.AnsibleLintConfigFile
-import de.achimonline.ansible_lint.command.AnsibleLintConfigFile.Companion.CONFIG_DIR_NAME
-import de.achimonline.ansible_lint.command.AnsibleLintConfigFile.Companion.CONFIG_FILE_NAME
-import de.achimonline.ansible_lint.command.AnsibleLintConfigFile.Companion.CONFIG_FILE_NAME_ALTERNATIVE
+import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
 import de.achimonline.ansible_lint.settings.AnsibleLintSettingsState
-import java.io.File
 import kotlin.io.path.pathString
 
 class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(project, false) {
@@ -26,19 +22,20 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
             AnsibleLintStatusBarActions.CreateConfig(
                 message(
                     "statusbar.action.text",
-                    CONFIG_FILE_NAME
+                    AnsibleLintCommandFileConfig.DEFAULT
                 ),
-                project
+                project,
+                AnsibleLintCommandFileConfig.DEFAULT
             )
         )
         actionGroup.add(
             AnsibleLintStatusBarActions.CreateConfig(
                 message(
                     "statusbar.action.text",
-                    "$CONFIG_DIR_NAME${File.separator}$CONFIG_FILE_NAME_ALTERNATIVE"
+                    AnsibleLintCommandFileConfig.ALTERNATIVE
                 ),
                 project,
-                true
+                AnsibleLintCommandFileConfig.ALTERNATIVE
             )
         )
     }
@@ -52,7 +49,7 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
 
         if (
             !settingsState.settings.onlyRunWhenConfigFilePresent ||
-            AnsibleLintConfigFile.exists(project)
+            AnsibleLintCommandFileConfig(project).locate() != null
         ) {
             return WidgetState.HIDDEN
         } else {

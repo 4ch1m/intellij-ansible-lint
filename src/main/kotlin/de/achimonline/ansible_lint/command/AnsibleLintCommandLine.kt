@@ -21,6 +21,7 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
     fun createLintProcess(
         workingDirectory: String,
         projectDirectory: String,
+        configFile: String?,
         yamlFilePath: String
     ): Process {
         val parameters = mutableListOf(
@@ -29,7 +30,6 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
             "--format", "json",
         )
 
-        val configFile = AnsibleLintConfigFile.get(projectDirectory)
         if (configFile != null) {
             parameters.addAll(listOf(
                 "--config-file", configFile

@@ -1,29 +1,15 @@
 package de.achimonline.ansible_lint.annotator.actions
 
-import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiFile
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 
-class AnsibleLintAnnotatorNoQAAction(private val line: Int, private val ruleId: String) : IntentionAction {
-    override fun startInWriteAction(): Boolean {
-        return true
-    }
-
-    override fun getText(): String {
-        return "${AnsibleLintAnnotatorActionOrder.NO_QA.value}: ${message("action.disable-rule-check-using-noqa")}"
-    }
-
-    override fun getFamilyName(): String {
-        return "AnsibleLint"
-    }
-
-    override fun isAvailable(project: Project, editor: Editor?, file: PsiFile?): Boolean {
-        return true
-    }
-
+class AnsibleLintAnnotatorNoQAAction(
+    private val line: Int,
+    private val ruleId: String
+) : AnsibleLintAnnotatorAction(message("action.disable-rule-check-using-noqa")) {
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         if (editor != null) {
             val lineStartOffset = editor.document.getLineStartOffset(line)
@@ -39,6 +25,10 @@ class AnsibleLintAnnotatorNoQAAction(private val line: Int, private val ruleId: 
 
             editor.document.replaceString(lineStartOffset, lineEndOffset, newLineText)
         }
+    }
+
+    override fun startInWriteAction(): Boolean {
+        return true
     }
 
     companion object {

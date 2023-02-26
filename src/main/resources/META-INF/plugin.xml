@@ -21,6 +21,7 @@
                 key="settings.display.name"
                 instance="de.achimonline.ansible_lint.settings.AnsibleLintConfigurable"/>
 
+        <!--suppress PluginXmlValidity -->
         <externalAnnotator
                 language="yaml"
                 implementationClass="de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator"/>
@@ -33,6 +34,7 @@
                 displayType="BALLOON"
                 key="notifications.group.title"/>
 
+        <!--suppress PluginXmlValidity -->
         <statusBarWidgetFactory id="pythonInterpreterWidget"
                                 implementation="de.achimonline.ansible_lint.statusbar.AnsibleLintStatusBarWidgetFactory"
                                 order="after CodeStyleStatusBarWidget"/>
