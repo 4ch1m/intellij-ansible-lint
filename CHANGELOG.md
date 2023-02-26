@@ -4,6 +4,7 @@
 - new: [ignore-file](https://ansible-lint.readthedocs.io/configuring/#ignoring-rules-for-entire-files) integration
   - new quick action ("Add rule to ignore-file.")
   - general plugin setting to control visualization of ignored rules
+- new: quick action "Add rule id to 'skip_list' in config file."
 
 ### Changed
 - Gradle-wrapper update

@@ -9,6 +9,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.*
+import de.achimonline.ansible_lint.annotator.actions.*
 import de.achimonline.ansible_lint.parser.AnsibleLintItem
 import de.achimonline.ansible_lint.parser.AnsibleLintItem.Location
 import de.achimonline.ansible_lint.parser.AnsibleLintItem.Location.BeginAndEnd
@@ -84,8 +85,10 @@ class AnsibleLintAnnotatorTest {
             location = Location(lines = BeginAndEnd(begin = 666))
         )
 
+        val lintItems = listOf(lintItem1, lintItem2, lintItem3, lintItem4)
+
         val applicableInformation = ApplicableInformation(
-            AnsibleLintSettings(), listOf(lintItem1, lintItem2, lintItem3, lintItem4), lintIgnores
+            AnsibleLintSettings(), lintItems, lintIgnores
         )
 
         whenever(document.getLineStartOffset(anyInt())).doReturn(1)
@@ -121,7 +124,21 @@ class AnsibleLintAnnotatorTest {
             ), messageCaptor.allValues
         )
 
-        verify(annotationBuilder, times(/* lint-items: */ 3 * /* fix-options: */ 4 /* ignored-items: */- 1)).withFix(any())
+        val possibleFixOptions = listOf(
+            AnsibleLintAnnotatorClipboardAction::class,
+            AnsibleLintAnnotatorIgnoreFileAction::class,
+            AnsibleLintAnnotatorNoQAAction::class,
+            AnsibleLintAnnotatorOpenUrlAction::class,
+            AnsibleLintAnnotatorSkipListAction::class
+        )
+
+        val skippedItems = 1
+        val ignoredItems = 1
+
+        verify(
+            annotationBuilder,
+            times((lintItems.size - skippedItems) * possibleFixOptions.size - ignoredItems)
+        ).withFix(any())
     }
 
     @Test

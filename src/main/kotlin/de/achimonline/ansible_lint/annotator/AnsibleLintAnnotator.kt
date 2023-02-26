@@ -16,10 +16,7 @@ import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.*
-import de.achimonline.ansible_lint.annotator.actions.AnsibleLintAnnotatorClipboardAction
-import de.achimonline.ansible_lint.annotator.actions.AnsibleLintAnnotatorIgnoreFileAction
-import de.achimonline.ansible_lint.annotator.actions.AnsibleLintAnnotatorNoQAAction
-import de.achimonline.ansible_lint.annotator.actions.AnsibleLintAnnotatorOpenUrlAction
+import de.achimonline.ansible_lint.annotator.actions.*
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
 import de.achimonline.ansible_lint.parser.AnsibleLintItem
 import de.achimonline.ansible_lint.parser.AnsibleLintParser
@@ -151,6 +148,7 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
                 .withFix(AnsibleLintAnnotatorOpenUrlAction(lintItem.url))
                 .withFix(AnsibleLintAnnotatorNoQAAction(line, lintItem.check_name))
                 .withFix(AnsibleLintAnnotatorClipboardAction(lintItem.check_name))
+                .withFix(AnsibleLintAnnotatorSkipListAction(lintItem.check_name))
 
             if (!itemIsIgnored) {
                 annotationBuilder = annotationBuilder.withFix(AnsibleLintAnnotatorIgnoreFileAction(lintItem.check_name))

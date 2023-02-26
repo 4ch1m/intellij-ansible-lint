@@ -7,6 +7,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.0"
     id("org.jetbrains.intellij") version "1.13.0"
     id("org.jetbrains.changelog") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.20"
     id("com.github.ben-manes.versions") version "0.45.0"
 }
 
@@ -22,6 +23,7 @@ intellij {
 
 dependencies {
     implementation("com.beust:klaxon:5.6")
+    implementation("com.charleskorn.kaml:kaml-jvm:0.52.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 }
