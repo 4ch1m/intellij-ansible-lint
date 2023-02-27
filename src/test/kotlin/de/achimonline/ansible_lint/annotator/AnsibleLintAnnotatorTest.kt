@@ -67,7 +67,7 @@ class AnsibleLintAnnotatorTest {
 
         val lintItem1 = AnsibleLintItem(
             check_name = "testRule1",
-            severity = "critical",
+            severity = "major",
             location = Location(lines = BeginAndEnd(begin = 1))
         )
 
@@ -81,7 +81,7 @@ class AnsibleLintAnnotatorTest {
 
         val lintItem4 = AnsibleLintItem(
             check_name = "testRule4",
-            severity = "major",
+            severity = "minor",
             location = Location(lines = BeginAndEnd(begin = 666))
         )
 
