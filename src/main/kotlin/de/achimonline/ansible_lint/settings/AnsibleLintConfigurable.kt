@@ -6,10 +6,10 @@ import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.ColorUtil
-import com.intellij.ui.SimpleTextAttributes
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.util.ui.UIUtil
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
@@ -111,7 +111,7 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
         return """
             <icon src='${if (success) "AllIcons.General.InspectionsOK" else "AllIcons.General.InspectionsError"}'>
             &nbsp;
-            <span style='color: ${ColorUtil.toHtmlColor(if (success) SimpleTextAttributes.GRAY_ATTRIBUTES.fgColor else SimpleTextAttributes.ERROR_ATTRIBUTES.fgColor)}'>
+            <span style='color: ${ColorUtil.toHtmlColor(if (success) UIUtil.getLabelInfoForeground() else UIUtil.getErrorForeground())}'>
                 $text
             </span>
         """.trimIndent()
