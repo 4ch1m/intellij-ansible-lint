@@ -163,11 +163,12 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
             /**
                 based on:
                 - [_remap_severity](https://github.com/ansible/ansible-lint/blob/36725c71243a30a9cb63456783362ba71668a76a/src/ansiblelint/formatters/__init__.py#L182)
+                - [_remap_severity](https://github.com/ansible/ansible-lint/blob/8b842129750f5dc789a53b4e9372f6b4f82264ce/src/ansiblelint/formatters/__init__.py#L180)
             */
             "blocker" -> return HighlightSeverity.ERROR
             "critical" -> return HighlightSeverity.ERROR
-            "major" -> return HighlightSeverity.WARNING
-            "minor" -> return HighlightSeverity.WEAK_WARNING
+            "major" -> return HighlightSeverity.ERROR
+            "minor" -> return HighlightSeverity.WARNING
         }
 
         return HighlightSeverity.INFORMATION
