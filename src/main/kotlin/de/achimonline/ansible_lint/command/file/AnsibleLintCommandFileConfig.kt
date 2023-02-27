@@ -57,9 +57,11 @@ class AnsibleLintCommandFileConfig(project: Project) : AnsibleLintCommandFile(
                             YAML_DEFAULT_INDENT
                         }
 
-                        newConfigText.add("${yamlIndent}- ${rule}")
+                        newConfigText.add("${yamlIndent}- $rule")
                     }
                 }
+
+                newConfigText.add("") // NOTE: intentional new line at the end
 
                 configFile.writeText(newConfigText.joinToString(System.lineSeparator()))
             }
@@ -70,7 +72,7 @@ class AnsibleLintCommandFileConfig(project: Project) : AnsibleLintCommandFile(
                     "",
                     "${YAML_SKIP_LIST_NODE}:",
                     "${YAML_DEFAULT_INDENT}- $rule",
-                    ""
+                    "" // NOTE: intentional new line at the end
                 ).joinToString(System.lineSeparator())
             )
         }

@@ -79,6 +79,7 @@ class AnsibleLintCommandFileConfigTest {
             
             # Offline mode disables installation of requirements.yml and schema refreshing
             offline: true
+            
         """.trimIndent()
         )
 
@@ -101,8 +102,8 @@ class AnsibleLintCommandFileConfigTest {
 
             skip_list:
               - testRule
-
-        """.trimIndent(), configFile.readText()) // NOTE: there's an intentional newline at the end
+            
+        """.trimIndent(), configFile.readText())
     }
 
     @Test
@@ -128,6 +129,7 @@ class AnsibleLintCommandFileConfigTest {
 
             # Offline mode disables installation of requirements.yml and schema refreshing
             offline: true
+            
         """.trimIndent())
 
         AnsibleLintCommandFileConfig(project).addRuleToSkipList("testRule1")
@@ -158,6 +160,7 @@ class AnsibleLintCommandFileConfigTest {
 
             # Offline mode disables installation of requirements.yml and schema refreshing
             offline: true
+            
         """.trimIndent(), configFile.readText())
     }
 }
