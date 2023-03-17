@@ -40,6 +40,46 @@
 
 Your system needs to have [Ansible Lint](https://github.com/ansible/ansible-lint) version `6.11.0` (or later) installed.
 
+_NOTE_
+
+The plugin **does not** detect or use any (virtual) environment settings of your current project to run `ansible-lint`.  
+Alternative installation methods (like [Poetry](https://python-poetry.org/), [Homebrew](https://brew.sh), etc.) are also not supported.
+
+`ansible-lint` needs to be runnable directly from your computer's command line.
+
+If your package manager doesn't provide `ansible-lint` or you want to install a more up-to-date version, then a suggested setup would be:
+
+* create an `ansible-lint` folder in your home directory:
+  ```
+  mkdir ~/ansible-lint
+  ```
+
+* change into it, and create a dedicated virtual environment:
+  ```
+  cd ~/ansible-lint
+  python3 -m venv venv
+  ```
+
+* activate the virtual environment and install `ansible-lint` via `pip`:
+  ```
+  source venv/bin/activate
+  pip install ansible-lint
+  ```
+
+* finally, create this script file (`~/ansible-lint/run.sh`):
+  ```
+  #!/bin/bash
+  source ~/ansible-lint/venv/bin/activate
+  ansible-lint ${@}
+  ```
+
+* don't forget to make it executable:
+  ```
+  chmod +x ~/ansible-lint/run.sh
+  ```
+
+Reference to this script in the plugin; and you should be ready to go. 👍
+
 ## Installation
 
 Use the IDE's built-in plugin system:
