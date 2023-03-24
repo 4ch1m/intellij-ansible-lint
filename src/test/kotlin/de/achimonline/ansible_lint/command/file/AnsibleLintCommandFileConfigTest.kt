@@ -52,13 +52,15 @@ class AnsibleLintCommandFileConfigTest {
 
         AnsibleLintCommandFileConfig(project).addRuleToSkipList(testRule)
 
-        assertEquals(listOf(
-            ansibleLintCommandFileConfig.initialContent().trimEnd(),
-            "",
-            "${AnsibleLintCommandFileConfig.YAML_SKIP_LIST_NODE}:",
-            "${AnsibleLintCommandFileConfig.YAML_DEFAULT_INDENT}- $testRule",
-            ""
-        ).joinToString(System.lineSeparator()), configFile.readText())
+        assertEquals(
+            listOf(
+                ansibleLintCommandFileConfig.initialContent().trimEnd(),
+                "",
+                "${AnsibleLintCommandFileConfig.YAML_SKIP_LIST_NODE}:",
+                "${AnsibleLintCommandFileConfig.YAML_DEFAULT_INDENT}- $testRule",
+                ""
+            ).joinToString(System.lineSeparator()), configFile.readText()
+        )
     }
 
     @Test
@@ -80,8 +82,7 @@ class AnsibleLintCommandFileConfigTest {
             # Offline mode disables installation of requirements.yml and schema refreshing
             offline: true
             
-        """.trimIndent()
-        )
+        """.trimIndent())
 
         AnsibleLintCommandFileConfig(project).addRuleToSkipList(testRule)
 

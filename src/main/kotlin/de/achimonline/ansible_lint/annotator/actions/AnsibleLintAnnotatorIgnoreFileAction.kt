@@ -8,7 +8,8 @@ import com.intellij.psi.PsiFile
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileIgnore
 
-class AnsibleLintAnnotatorIgnoreFileAction(private val rule: String) : AnsibleLintAnnotatorAction(message("action.add-rule-id-to-ignore-file")) {
+class AnsibleLintAnnotatorIgnoreFileAction(private val rule: String) :
+    AnsibleLintAnnotatorAction(message("action.add-rule-id-to-ignore-file")) {
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         file?.let {
             AnsibleLintCommandFileIgnore(project).addRule(it, rule)

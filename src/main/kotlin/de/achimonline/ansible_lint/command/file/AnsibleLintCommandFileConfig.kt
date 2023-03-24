@@ -48,7 +48,7 @@ class AnsibleLintCommandFileConfig(project: Project) : AnsibleLintCommandFile(
 
                     if (configLine.startsWith("${YAML_SKIP_LIST_NODE}:")) {
                         // try to determine the YAML indent-level of existing entries ...
-                        val firstSkippedRule = skipList.items[0].yamlScalar.path.segments.firstOrNull {
+                        val firstSkippedRule = skipList.items.first().yamlScalar.path.segments.firstOrNull {
                             it is YamlPathSegment.MapElementValue
                         }
                         val yamlIndent = if (firstSkippedRule != null) {

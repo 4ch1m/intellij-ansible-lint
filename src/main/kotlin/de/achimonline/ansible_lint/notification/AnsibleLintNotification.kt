@@ -12,11 +12,11 @@ class AnsibleLintNotification {
             .getNotificationGroup("AnsibleLint")
             .createNotification(content!!, notificationType)
 
-            if (action != null) {
-                notification.addAction(action)
-            }
+        if (action != null) {
+            notification.addAction(action)
+        }
 
-            notification.notify(project)
+        notification.notify(project)
     }
 
     fun notifyError(project: Project?, content: String?, action: AnAction? = null) {

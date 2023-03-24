@@ -8,7 +8,8 @@ import com.intellij.psi.PsiFile
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
 
-class AnsibleLintAnnotatorSkipListAction(private val rule: String) : AnsibleLintAnnotatorAction(message("action.add-rule-id-to-skip-list")) {
+class AnsibleLintAnnotatorSkipListAction(private val rule: String) :
+    AnsibleLintAnnotatorAction(message("action.add-rule-id-to-skip-list")) {
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         file?.let {
             AnsibleLintCommandFileConfig(project).addRuleToSkipList(rule)

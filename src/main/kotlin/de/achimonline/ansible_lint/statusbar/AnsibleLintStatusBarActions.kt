@@ -20,7 +20,10 @@ class AnsibleLintStatusBarActions {
             val configFile = AnsibleLintCommandFileConfig(project).locateOrCreate(filePath)
             val virtualConfigFile = VfsUtil.findFileByIoFile(configFile, true)
 
-            FileEditorManager.getInstance(project).openTextEditor(OpenFileDescriptor(project, virtualConfigFile!!), true)
+            FileEditorManager
+                .getInstance(project)
+                .openTextEditor(OpenFileDescriptor(project, virtualConfigFile!!), true)
+
             AnsibleLintNotification().notifyInformation(project, message("action.info.config-file-created"))
         }
     }

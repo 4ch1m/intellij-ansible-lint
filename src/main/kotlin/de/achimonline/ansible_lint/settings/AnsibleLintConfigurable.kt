@@ -2,28 +2,32 @@ package de.achimonline.ansible_lint.settings
 
 import com.intellij.execution.ExecutionException
 import com.intellij.ide.impl.ProjectUtil
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.ColorUtil
+import com.intellij.ui.JBColor
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
-import com.intellij.util.ui.UIUtil
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileIgnore
 import de.achimonline.ansible_lint.common.AnsibleLintHelper
+import de.achimonline.ansible_lint.settings.AnsibleLintConfigurable.TestState.*
 import javax.swing.JButton
 import javax.swing.JEditorPane
+
+private val LOG = logger<AnsibleLintConfigurable>()
 
 class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name")) {
     private val settings
         get() = AnsibleLintSettingsState.instance.settings
 
     private lateinit var testButton: JButton
-    private lateinit var testStatus: JEditorPane
+    private lateinit var testStatusText: JEditorPane
 
     private val heartIcon = IconLoader.getIcon("/icons/heart-solid.svg", AnsibleLintConfigurable::class.java)
 
@@ -41,7 +45,7 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                     }.component
                 }
                 row {
-                    testStatus = comment("").component
+                    testStatusText = comment("").component
                 }
             }
             group(message("settings.group.options")) {
@@ -55,18 +59,25 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                 row {
                     checkBox(message("settings.group.integration.only-run-when-config-file-present"))
                         .comment(
-                            message("settings.group.integration.only-run-when-config-file-present.comment",
+                            message(
+                                "settings.group.integration.only-run-when-config-file-present.comment",
                                 AnsibleLintCommandFileConfig.DEFAULT,
-                                AnsibleLintCommandFileConfig.ALTERNATIVE))
+                                AnsibleLintCommandFileConfig.ALTERNATIVE
+                            )
+                        )
                         .bindSelected(settings::onlyRunWhenConfigFilePresent)
 
                     comment("<icon src='AllIcons.General.Information'>&nbsp;${message("settings.group.integration.only-run-when-config-file-present.recommended")}")
                 }
                 row {
                     checkBox(message("settings.group.integration.visualize-ignored-rules"))
-                        .comment(message("settings.group.integration.visualize-ignored-rules.comment",
-                            AnsibleLintCommandFileIgnore.DEFAULT,
-                            AnsibleLintCommandFileIgnore.ALTERNATIVE))
+                        .comment(
+                            message(
+                                "settings.group.integration.visualize-ignored-rules.comment",
+                                AnsibleLintCommandFileIgnore.DEFAULT,
+                                AnsibleLintCommandFileIgnore.ALTERNATIVE
+                            )
+                        )
                         .bindSelected(settings::visualizeIgnoredRules)
                 }
             }
@@ -83,37 +94,98 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
         apply() // fetch bindings
 
         testButton.isEnabled = false
-        testStatus.text = ""
+        testStatusText.text = ""
 
         try {
             val projectBasePath = AnsibleLintHelper.getProjectBasePath(ProjectUtil.getActiveProject()!!)
             val versionCheckProcess = AnsibleLintCommandLine(settings).createVersionCheckProcess(projectBasePath)
-            val output = AnsibleLintCommandLine.getOutput(versionCheckProcess)
+            val versionOutput = AnsibleLintCommandLine
+                .getOutput(versionCheckProcess)
+                .first
+                .split(System.lineSeparator())
+                .first()
+                .trim()
 
-            if (versionCheckProcess.exitValue() == 0 && output.first.contains("ansible-lint")) {
-                testStatus.text = updateTestStatus(true, output.first.split("\n")[0].trim())
+            if (versionCheckProcess.exitValue() == 0 && versionOutput.contains("ansible-lint")) {
+                val versions = AnsibleLintCommandLine.getVersions(versionOutput)
+
+                if (versions != null) {
+                    if (versions.first < AnsibleLintCommandLine.MIN_EXECUTABLE_VERSION) {
+                        testStatusText.text = updateTestStatus(
+                            WARNING,
+                            message(
+                                "settings.group.executable.test.old-version",
+                                versions.first,
+                                AnsibleLintCommandLine.MIN_EXECUTABLE_VERSION
+                            )
+                        )
+                    } else {
+                        testStatusText.text = updateTestStatus(SUCCESS, versionOutput)
+                    }
+                } else {
+                    logExecutableTest("Unable to parse version from: \"${versionOutput}\"")
+                    testStatusText.text = updateTestStatus(
+                        WARNING,
+                        message("settings.group.executable.test.unable-to-parse-version")
+                    )
+                }
             } else {
-                testStatus.text = updateTestStatus(
-                    false,
+                logExecutableTest("Unexpected return code/result: [${versionCheckProcess.exitValue()}] - $versionOutput")
+                testStatusText.text = updateTestStatus(
+                    FAILURE,
                     message("settings.group.executable.test.exit-value", versionCheckProcess.exitValue())
                 )
             }
         } catch (executionException: ExecutionException) {
-            testStatus.text = updateTestStatus(false, message("settings.group.executable.test.exception"))
+            logExecutableTest("Execution exception: $executionException")
+            testStatusText.text = updateTestStatus(
+                FAILURE,
+                message("settings.group.executable.test.exception")
+            )
         } catch (interruptedException: InterruptedException) {
-            testStatus.text = updateTestStatus(false, message("settings.group.executable.test.interrupted"))
+            logExecutableTest("Interrupted exception: $interruptedException")
+            testStatusText.text = updateTestStatus(
+                FAILURE,
+                message("settings.group.executable.test.interrupted")
+            )
         } finally {
             testButton.isEnabled = true
         }
     }
 
-    private fun updateTestStatus(success: Boolean, text: String): String {
+    private fun updateTestStatus(state: TestState, text: String): String {
+        val icon: String
+        val textColor: String
+
+        when (state) {
+            SUCCESS -> {
+                icon = "AllIcons.General.InspectionsOK"
+                textColor = ColorUtil.toHtmlColor(JBColor.GREEN)
+            }
+            WARNING -> {
+                icon = "AllIcons.General.NotificationWarning"
+                textColor = ColorUtil.toHtmlColor(JBColor.YELLOW)
+            }
+            FAILURE -> {
+                icon = "AllIcons.General.NotificationError"
+                textColor = ColorUtil.toHtmlColor(JBColor.RED)
+            }
+        }
+
         return """
-            <icon src='${if (success) "AllIcons.General.InspectionsOK" else "AllIcons.General.InspectionsError"}'>
+            <icon src='${icon}'>
             &nbsp;
-            <span style='color: ${ColorUtil.toHtmlColor(if (success) UIUtil.getLabelInfoForeground() else UIUtil.getErrorForeground())}'>
-                $text
-            </span>
+            <span style='color: ${textColor}'>${text}</span>
         """.trimIndent()
+    }
+
+    private enum class TestState {
+        SUCCESS,
+        WARNING,
+        FAILURE
+    }
+
+    private fun logExecutableTest(message: String) {
+        LOG.info("Executable test | $message")
     }
 }

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Pulls an up-to-date version of 'ansible-lint' and generates
+# the parseable SARIF file (which can be used for unit testing).
+
+SCRIPT_PATH=$(dirname $(realpath "${0}"))
+
+PLAYBOOK_FILE="test-playbook.yml"
+SARIF_OUTPUT_FILE="sarif_result.json"
+
+INSTALL_CMD+="pip "
+INSTALL_CMD+="install "
+INSTALL_CMD+="--root-user-action=ignore "
+INSTALL_CMD+="ansible-lint "
+
+LINT_CMD+="ansible-lint "
+LINT_CMD+="-q "
+LINT_CMD+="--parseable "
+LINT_CMD+="--format sarif "
+LINT_CMD+="${PLAYBOOK_FILE} "
+
+mkdir --parents "${SCRIPT_PATH}/output"
+touch "${SCRIPT_PATH}/output/${SARIF_OUTPUT_FILE}"
+
+docker \
+  run \
+  --interactive \
+  --tty \
+  --rm \
+  --volume "${SCRIPT_PATH}/${PLAYBOOK_FILE}":/tmp/${PLAYBOOK_FILE} \
+  --volume "${SCRIPT_PATH}/output":/tmp/output \
+  --workdir /tmp \
+  python:3 \
+  /bin/bash -c "${INSTALL_CMD} && ${LINT_CMD} | tee /tmp/output/${SARIF_OUTPUT_FILE}"
+
+cp "${SCRIPT_PATH}/output/${SARIF_OUTPUT_FILE}" "${SCRIPT_PATH}/../src/test/resources/${SARIF_OUTPUT_FILE}"

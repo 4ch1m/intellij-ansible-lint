@@ -1,3 +1,16 @@
+## [1.4.0]
+
+### Added
+- enhanced output for "executable test" in settings dialog (min. version check)
+
+### Changed
+- major rewrite of internal parser: switch from CodeClimate-JSON to SARIF-JSON (see "[Output formats](https://ansible-lint.readthedocs.io/usage/#output-formats)")  
+  **NOTE:** this requires `ansible-lint` **6.14.3** for best results (older versions should work; but provide less useful information in annotation messages) 
+- improved formatting of annotation message(s)
+- several other improvements/refactorings
+- Gradle-wrapper update
+- dependency updates
+
 ## [1.3.0]
 
 ### Added

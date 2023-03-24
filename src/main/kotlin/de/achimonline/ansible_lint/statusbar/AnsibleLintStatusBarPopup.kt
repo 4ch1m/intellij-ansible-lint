@@ -47,10 +47,7 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
     override fun getWidgetState(file: VirtualFile?): WidgetState {
         val settingsState = ApplicationManager.getApplication().getService(AnsibleLintSettingsState::class.java)
 
-        if (
-            !settingsState.settings.onlyRunWhenConfigFilePresent ||
-            AnsibleLintCommandFileConfig(project).locate() != null
-        ) {
+        if (!settingsState.settings.onlyRunWhenConfigFilePresent || AnsibleLintCommandFileConfig(project).locate() != null) {
             return WidgetState.HIDDEN
         } else {
             @Suppress("DialogTitleCapitalization")

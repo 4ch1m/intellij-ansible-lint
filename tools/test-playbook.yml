@@ -1,0 +1,24 @@
+- name: test
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Test1
+      debug:
+        msg: "test1"
+
+    - name: test2
+      ansible.builtin.debug:
+        msg: "test2"
+
+    - name: Test3
+      ansible.builtin.copy:
+        content: test
+        dest: /tmp/test3.txt
+
+    - name: Test4
+      ansible.builtin.set_fact:
+        test1: test
+        test2: "{{test                }}"
+        test3: {a: foo,   b: bar}
+        test4: 12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890

@@ -3,3 +3,5 @@
 .run
 build
 assets
+src/generated/java/de
+tools/output

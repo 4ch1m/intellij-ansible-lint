@@ -71,33 +71,29 @@ class AnsibleLintCommandFileIgnoreTest {
 
     @Test
     fun addRule_existingIgnoreFile() {
-        ignoreFile.writeText(
-            """
+        ignoreFile.writeText("""
             vars/main.yml yaml[braces]
             tasks/main.yml name[casing]
-            """.trimIndent()
+        """.trimIndent()
         )
 
         AnsibleLintCommandFileIgnore(project).addRule(editorPsiFile, testRule)
 
-        assertEquals(
-            """
+        assertEquals("""
             vars/main.yml yaml[braces]
             tasks/main.yml name[casing]
             $editorFilePath $testRule
-            """.trimIndent().plus(System.lineSeparator()),
-            ignoreFile.readText()
-        )
+        """.trimIndent().plus(System.lineSeparator()),
+            ignoreFile.readText())
     }
 
     @Test
     fun addRule_existingIgnoreFileExistingRule() {
-        val ignoreFileContent =
-            """
+        val ignoreFileContent = """
             vars/main.yml yaml[braces]
             $editorFilePath $testRule
             tasks/main.yml name[casing]
-            """.trimIndent()
+        """.trimIndent()
 
         ignoreFile.writeText(ignoreFileContent)
 
@@ -108,8 +104,7 @@ class AnsibleLintCommandFileIgnoreTest {
 
     @Test
     fun parse() {
-        ignoreFile.writeText(
-            """
+        ignoreFile.writeText("""
             # comment
             vars/main.yml yaml[braces]
             tasks/main.yml name[casing] # comment
@@ -117,8 +112,7 @@ class AnsibleLintCommandFileIgnoreTest {
 
             tasks/test.yml name[casing]  #    comment
             roles/test/tasks/main.yml name[casing]
-            """.trimIndent()
-        )
+        """.trimIndent())
 
         val ignores = AnsibleLintCommandFileIgnore(project).parse()
 

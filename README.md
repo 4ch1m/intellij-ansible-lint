@@ -38,7 +38,8 @@
 
 ## Requirements
 
-Your system needs to have [Ansible Lint](https://github.com/ansible/ansible-lint) version `6.11.0` (or later) installed.
+Your system needs to have [Ansible Lint](https://github.com/ansible/ansible-lint) version `6.14.3` (or later) installed.  
+(Previous versions should work; but may not provide optimal/expected results.)
 
 _NOTE_
 

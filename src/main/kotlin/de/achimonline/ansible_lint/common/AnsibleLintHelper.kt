@@ -28,11 +28,11 @@ class AnsibleLintHelper {
         }
 
         /**
-            'ansible-lint' needs full path information of the file to be linted, so it can derive
-            the "file kind" (playbook, galaxy, tasks, vars, etc.).
-            But since we can't operate/pass the original file(path) to the linter
-            (see [de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.doAnnotate]), we need
-            to replicate the same parent-directory structure of the original file for the temp-file.
+        'ansible-lint' needs full path information of the file to be linted, so it can derive
+        the "file kind" (playbook, galaxy, tasks, vars, etc.).
+        But since we can't operate/pass the original file(path) to the linter
+        (see [de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.doAnnotate]), we need
+        to replicate the same parent-directory structure of the original file for the temp-file.
          */
         fun createTempFolderAndFile(
             projectBasePath: String,
@@ -44,7 +44,8 @@ class AnsibleLintHelper {
 
             val tempDirectory = createTempDirectory().toFile()
             val tempDirectoryBasePath = tempDirectory.absolutePath
-            val tempDirectoryBasePathWithSubDirectories = "${tempDirectoryBasePath}${File.separator}${parentDirectories.joinToString(File.separator)}"
+            val tempDirectoryBasePathWithSubDirectories =
+                "${tempDirectoryBasePath}${File.separator}${parentDirectories.joinToString(File.separator)}"
 
             File(tempDirectoryBasePathWithSubDirectories).mkdirs()
 

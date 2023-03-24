@@ -1,5 +1,7 @@
 package de.achimonline.ansible_lint.parser
 
+import com.intellij.lang.annotation.HighlightSeverity
+import de.achimonline.ansible_lint.parser.sarif.Result.Level
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
@@ -9,29 +11,31 @@ class AnsibleLintParserTest {
 
     @Test
     fun parse() {
-        val json = getFile("linter_output.json").readText()
+        val json = getFile("sarif_result.json").readText()
 
         val parsed = AnsibleLintParser.parse(json)
 
-        assertEquals(3, parsed.size)
+        assertEquals(6, parsed.size)
 
-        assertEquals("issue", parsed[0].type)
-        assertEquals("name[casing]", parsed[0].check_name)
-        assertEquals(1, parsed[0].categories.size)
-        assertEquals("https://ansible-lint.readthedocs.io/rules/name/", parsed[0].url)
-        assertEquals("major", parsed[0].severity)
-        assertEquals("warning", parsed[0].level)
-        assertEquals("All names should start with an uppercase letter.", parsed[0].description)
-        assertEquals("877a87298cbbb525c454904f68eb41007a92b47aa47572da599cf6c5eec70554", parsed[0].fingerprint)
-        assertEquals("test.yml", parsed[0].location.path)
-        assertEquals(1, parsed[0].getLine())
-        assertEquals(Integer.MIN_VALUE, parsed[0].getColumn())
-        assertEquals("", parsed[0].content.body)
+        val ansibleLintItem = parsed.first()
 
-        assertEquals(2, parsed[1].categories.size)
-        assertEquals("Task/Handler: test", parsed[1].content.body)
+        assertEquals("name[casing]", ansibleLintItem.ruleId)
+        assertEquals("All names should start with an uppercase letter.", ansibleLintItem.description)
+        assertEquals("All names should start with an uppercase letter.", ansibleLintItem.message)
+        assertEquals(1, ansibleLintItem.startLine)
+        assertNull(ansibleLintItem.endLine)
+        assertNull(ansibleLintItem.startColumn)
+        assertNull(ansibleLintItem.endColumn)
+        assertEquals("All tasks and plays should have a distinct name for readability and for ``--start-at-task`` to work", ansibleLintItem.helpText)
+        assertEquals("https://ansible-lint.readthedocs.io/rules/name/", ansibleLintItem.helpUri)
+        assertEquals(HighlightSeverity.WARNING, ansibleLintItem.severity)
+    }
 
-        assertEquals(666, parsed[2].getLine())
-        assertEquals(42, parsed[2].getColumn())
+    @Test
+    fun sarifSeverityMapper() {
+        assertEquals(HighlightSeverity.ERROR, AnsibleLintParser.sarifSeverityMapper(Level.ERROR))
+        assertEquals(HighlightSeverity.WARNING, AnsibleLintParser.sarifSeverityMapper(Level.WARNING))
+        assertEquals(HighlightSeverity.INFORMATION, AnsibleLintParser.sarifSeverityMapper(Level.NOTE))
+        assertEquals(HighlightSeverity.INFORMATION, AnsibleLintParser.sarifSeverityMapper(Level.NONE))
     }
 }

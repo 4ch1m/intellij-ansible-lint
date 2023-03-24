@@ -56,17 +56,20 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
         if (settingsState.settings.onlyRunWhenConfigFilePresent && configFile == null) return ApplicableInformation()
 
         val projectBasePath = AnsibleLintHelper.getProjectBasePath(project)
-        val relativeFilePath = collectedInformation.file.virtualFile.toNioPath().pathString.removePrefix(projectBasePath).removePrefix(File.separator)
+        val relativeFilePath =
+            collectedInformation.file.virtualFile.toNioPath().pathString.removePrefix(projectBasePath)
+                .removePrefix(File.separator)
         val ignores = AnsibleLintCommandFileIgnore(project).parse()
 
         /**
-            NOTE:
-            Creating a temporary file (with the current editor content) seems to be the only way to
-            speed up (re-)linting after changes occurred.
+        NOTE:
 
-            check:
-            - [How to trigger ExternalAnnotator running immediately after saving the code change?](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360004284939-How-to-trigger-ExternalAnnotator-running-immediately-after-saving-the-code-change-)
-            - [Only trigger externalAnnotator when the file system is in sync](https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000337510-Only-trigger-externalAnnotator-when-the-file-system-is-in-sync)
+        Creating a temporary file (with the current editor content) seems to be the only way to
+        speed up (re-)linting after changes occurred.
+
+        check:
+        - [How to trigger ExternalAnnotator running immediately after saving the code change?](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360004284939-How-to-trigger-ExternalAnnotator-running-immediately-after-saving-the-code-change-)
+        - [Only trigger externalAnnotator when the file system is in sync](https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000337510-Only-trigger-externalAnnotator-when-the-file-system-is-in-sync)
          */
         val tempFolderAndFile = AnsibleLintHelper.createTempFolderAndFile(
             projectBasePath = projectBasePath,
@@ -124,64 +127,45 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
 
     override fun apply(file: PsiFile, applicableInformation: ApplicableInformation, holder: AnnotationHolder) {
         applicableInformation.lintItems.forEach { lintItem ->
-            val itemIsIgnored = applicableInformation.lintIgnores.contains(lintItem.check_name)
+            val itemIsIgnored = applicableInformation.lintIgnores.contains(lintItem.ruleId)
 
             // skip ignored items; if specified via settings
             if (!applicableInformation.settings.visualizeIgnoredRules && itemIsIgnored) return@forEach
 
-            // skip items with no line information
-            if (lintItem.getLine() == Int.MIN_VALUE) return@forEach
-
             val document: Document = PsiDocumentManager.getInstance(file.project).getDocument(file)!!
 
-            val line: Int = lintItem.getLine() - 1
+            val line: Int = lintItem.startLine - 1
             val startOffset: Int = document.getLineStartOffset(line)
             val endOffset: Int = document.getLineEndOffset(line)
             val text = document.getText(TextRange(startOffset, endOffset))
-            val startOffsetDelta = if (lintItem.getColumn() != Int.MIN_VALUE) lintItem.getColumn() else (text.length - text.trimStart().length)
+            val startOffsetDelta = text.length - text.trimStart().length
 
             var annotationBuilder = holder.newAnnotation(
-                if (itemIsIgnored) HighlightSeverity.WEAK_WARNING else getAnnotationHighlightSeverity(lintItem),
+                if (itemIsIgnored) HighlightSeverity.WEAK_WARNING else lintItem.severity,
                 getAnnotationMessage(lintItem, itemIsIgnored)
             )
                 .range(TextRange(startOffset + startOffsetDelta, endOffset))
-                .withFix(AnsibleLintAnnotatorOpenUrlAction(lintItem.url))
-                .withFix(AnsibleLintAnnotatorNoQAAction(line, lintItem.check_name))
-                .withFix(AnsibleLintAnnotatorClipboardAction(lintItem.check_name))
-                .withFix(AnsibleLintAnnotatorSkipListAction(lintItem.check_name))
+                .withFix(AnsibleLintAnnotatorOpenUrlAction(lintItem.helpUri))
+                .withFix(AnsibleLintAnnotatorNoQAAction(line, lintItem.ruleId))
+                .withFix(AnsibleLintAnnotatorClipboardAction(lintItem.ruleId))
+                .withFix(AnsibleLintAnnotatorSkipListAction(lintItem.ruleId))
 
             if (!itemIsIgnored) {
-                annotationBuilder = annotationBuilder.withFix(AnsibleLintAnnotatorIgnoreFileAction(lintItem.check_name))
+                annotationBuilder = annotationBuilder.withFix(AnsibleLintAnnotatorIgnoreFileAction(lintItem.ruleId))
             }
 
             annotationBuilder.create()
         }
     }
 
-    fun getAnnotationHighlightSeverity(ansibleLintItem: AnsibleLintItem): HighlightSeverity {
-        when (ansibleLintItem.severity.lowercase().trim()) {
-            /**
-                based on:
-                - [_remap_severity](https://github.com/ansible/ansible-lint/blob/36725c71243a30a9cb63456783362ba71668a76a/src/ansiblelint/formatters/__init__.py#L182)
-                - [_remap_severity](https://github.com/ansible/ansible-lint/blob/8b842129750f5dc789a53b4e9372f6b4f82264ce/src/ansiblelint/formatters/__init__.py#L180)
-            */
-            "blocker" -> return HighlightSeverity.ERROR
-            "critical" -> return HighlightSeverity.ERROR
-            "major" -> return HighlightSeverity.ERROR
-            "minor" -> return HighlightSeverity.WARNING
-        }
-
-        return HighlightSeverity.INFORMATION
-    }
-
     fun getAnnotationMessage(ansibleLintItem: AnsibleLintItem, ignored: Boolean): String {
-        return """
-            ${if (ignored) "${message("annotation.ignored-prefix")} " else ""}
-            ${ansibleLintItem.description}
-            ${if (ansibleLintItem.content.body.isNotEmpty()) "(${ansibleLintItem.content.body})" else ""}
-            |
-            Rule: ${ansibleLintItem.check_name}
-        """.trimIndent()
+        return (
+            (if (ignored) "${message("annotation.ignored-prefix")} " else "") +
+            ("${ansibleLintItem.description} ") +
+            (if (ansibleLintItem.message.isNotEmpty()) "| ${ansibleLintItem.message} " else "") +
+            (if (ansibleLintItem.helpText.isNotEmpty()) "(${ansibleLintItem.helpText}) " else "") +
+            ("| ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}")
+        )
     }
 
     data class CollectedInformation(

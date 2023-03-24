@@ -10,9 +10,8 @@ import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
 import de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.*
 import de.achimonline.ansible_lint.annotator.actions.*
+import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.parser.AnsibleLintItem
-import de.achimonline.ansible_lint.parser.AnsibleLintItem.Location
-import de.achimonline.ansible_lint.parser.AnsibleLintItem.Location.BeginAndEnd
 import de.achimonline.ansible_lint.settings.AnsibleLintSettings
 import org.junit.Test
 
@@ -25,6 +24,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
+import java.util.*
 
 @RunWith(MockitoJUnitRunner::class)
 class AnsibleLintAnnotatorTest {
@@ -48,6 +48,26 @@ class AnsibleLintAnnotatorTest {
 
     private lateinit var ansibleLintAnnotator: AnsibleLintAnnotator
 
+    private fun buildAnsibleLintItem(
+        ruleId: String = "testRule-${UUID.randomUUID()}",
+        description: String = "testDescription-${UUID.randomUUID()}",
+        message: String = "testMessage-${UUID.randomUUID()}",
+        startLine: Int = (1..666).random(),
+        helpText: String = "helpText-${UUID.randomUUID()}",
+        helpUri: String = "helpUri-${UUID.randomUUID()}",
+        severity: HighlightSeverity = HighlightSeverity.ERROR
+    ): AnsibleLintItem {
+        return AnsibleLintItem(
+            ruleId = ruleId,
+            description = description,
+            message = message,
+            startLine = startLine,
+            helpText = helpText,
+            helpUri = helpUri,
+            severity = severity
+        )
+    }
+
     @Before
     fun setUp() {
         whenever(psiFile.project).doReturn(project)
@@ -63,32 +83,29 @@ class AnsibleLintAnnotatorTest {
 
     @Test
     fun apply() {
-        val lintIgnores = setOf("testRule42", "testRule2", "testRule666")
+        val lintItem1 = buildAnsibleLintItem(severity = HighlightSeverity.ERROR)
+        val lintItem2 = buildAnsibleLintItem(severity = HighlightSeverity.ERROR)
+        val lintItem3 = buildAnsibleLintItem(severity = HighlightSeverity.INFORMATION)
+        val lintItem4 = buildAnsibleLintItem(severity = HighlightSeverity.WARNING)
 
-        val lintItem1 = AnsibleLintItem(
-            check_name = "testRule1",
-            severity = "major",
-            location = Location(lines = BeginAndEnd(begin = 1))
+        val lintItems = listOf(
+            lintItem1,
+            lintItem2,
+            lintItem3,
+            lintItem4
         )
 
-        val lintItem2 = AnsibleLintItem( // ignored item; should become a "weak warning", instead of error
-            check_name = "testRule2",
-            severity = "blocker",
-            location = Location(lines = BeginAndEnd(begin = 42))
+        val lintIgnores = setOf(
+            UUID.randomUUID().toString(),
+            lintItem2.ruleId,
+            UUID.randomUUID().toString()
         )
-
-        val lintItem3 = AnsibleLintItem() // line info not set; item should be skipped
-
-        val lintItem4 = AnsibleLintItem(
-            check_name = "testRule4",
-            severity = "minor",
-            location = Location(lines = BeginAndEnd(begin = 666))
-        )
-
-        val lintItems = listOf(lintItem1, lintItem2, lintItem3, lintItem4)
+        val ignoredItems = 1
 
         val applicableInformation = ApplicableInformation(
-            AnsibleLintSettings(), lintItems, lintIgnores
+            settings = AnsibleLintSettings(),
+            lintItems = lintItems,
+            lintIgnores = lintIgnores
         )
 
         whenever(document.getLineStartOffset(anyInt())).doReturn(1)
@@ -105,13 +122,14 @@ class AnsibleLintAnnotatorTest {
         val messageCaptor = argumentCaptor<String>()
 
         argumentCaptor<HighlightSeverity, String>().apply {
-            verify(annotationHolder, times(3)).newAnnotation(severityCaptor.capture(), messageCaptor.capture())
+            verify(annotationHolder, times(4)).newAnnotation(severityCaptor.capture(), messageCaptor.capture())
         }
 
         assertEquals(
             listOf(
                 HighlightSeverity.ERROR,
                 HighlightSeverity.WEAK_WARNING,
+                HighlightSeverity.INFORMATION,
                 HighlightSeverity.WARNING
             ), severityCaptor.allValues
         )
@@ -120,6 +138,7 @@ class AnsibleLintAnnotatorTest {
             listOf(
                 ansibleLintAnnotator.getAnnotationMessage(lintItem1, false),
                 ansibleLintAnnotator.getAnnotationMessage(lintItem2, true),
+                ansibleLintAnnotator.getAnnotationMessage(lintItem3, false),
                 ansibleLintAnnotator.getAnnotationMessage(lintItem4, false)
             ), messageCaptor.allValues
         )
@@ -132,21 +151,18 @@ class AnsibleLintAnnotatorTest {
             AnsibleLintAnnotatorSkipListAction::class
         )
 
-        val skippedItems = 1
-        val ignoredItems = 1
-
         verify(
             annotationBuilder,
-            times((lintItems.size - skippedItems) * possibleFixOptions.size - ignoredItems)
+            times(lintItems.size * possibleFixOptions.size - ignoredItems)
         ).withFix(any())
     }
 
     @Test
     fun apply_dontVisualizeIgnores() {
-        val lintIgnores = setOf("testRule2")
+        val lintItem1 = buildAnsibleLintItem()
+        val lintItem2 = buildAnsibleLintItem()
 
-        val lintItem1 = AnsibleLintItem(location = Location(lines = BeginAndEnd(begin = 1)))
-        val lintItem2 = AnsibleLintItem(check_name = "testRule2", location = Location(lines = BeginAndEnd(begin = 42)))
+        val lintIgnores = setOf(lintItem2.ruleId)
 
         whenever(document.getLineStartOffset(anyInt())).doReturn(1)
         whenever(document.getLineEndOffset(anyInt())).doReturn(999)
@@ -170,22 +186,39 @@ class AnsibleLintAnnotatorTest {
     }
 
     @Test
-    fun getAnnotationHighlightSeverity() {
-        val ansibleLintAnnotator = AnsibleLintAnnotator()
+    fun getAnnotationMessage() {
+        var ansibleLintItem = buildAnsibleLintItem()
+        assertEquals(
+            "${ansibleLintItem.description} | ${ansibleLintItem.message} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
+            ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
+        )
 
-        assertEquals(HighlightSeverity.ERROR, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = "blocker")))
-        assertEquals(HighlightSeverity.ERROR, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = "critical")))
-        assertEquals(HighlightSeverity.ERROR, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = "major")))
-        assertEquals(HighlightSeverity.WARNING, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = "minor")))
-        assertEquals(HighlightSeverity.INFORMATION, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = "info")))
+        ansibleLintItem = buildAnsibleLintItem(message = "")
+        assertEquals(
+            "${ansibleLintItem.description} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
+            ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
+        )
 
-        assertEquals(HighlightSeverity.ERROR, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = " Blocker ")))
-        assertEquals(HighlightSeverity.ERROR, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = " Critical ")))
-        assertEquals(HighlightSeverity.ERROR, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = " Major ")))
-        assertEquals(HighlightSeverity.WARNING, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = " Minor ")))
-        assertEquals(HighlightSeverity.INFORMATION, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = " Info ")))
+        ansibleLintItem = buildAnsibleLintItem(helpText = "")
+        assertEquals(
+            "${ansibleLintItem.description} | ${ansibleLintItem.message} | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
+            ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
+        )
 
-        assertEquals(HighlightSeverity.INFORMATION, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = " ")))
-        assertEquals(HighlightSeverity.INFORMATION, ansibleLintAnnotator.getAnnotationHighlightSeverity(AnsibleLintItem(severity = "UNKNOWN")))
+        ansibleLintItem = buildAnsibleLintItem(message = "", helpText = "")
+        assertEquals(
+            "${ansibleLintItem.description} | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
+            ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
+        )
+
+        ansibleLintItem = buildAnsibleLintItem()
+        assertEquals(
+            "${message("annotation.ignored-prefix")} ${ansibleLintItem.description} | ${ansibleLintItem.message} (${ansibleLintItem.helpText}) | ${
+                message(
+                    "annotation.rule-id-prefix"
+                )
+            } ${ansibleLintItem.ruleId}",
+            ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, true)
+        )
     }
 }

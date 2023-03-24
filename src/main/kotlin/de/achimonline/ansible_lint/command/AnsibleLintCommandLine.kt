@@ -2,6 +2,8 @@ package de.achimonline.ansible_lint.command
 
 import com.intellij.execution.configurations.GeneralCommandLine
 import de.achimonline.ansible_lint.settings.AnsibleLintSettings
+import io.github.z4kn4fein.semver.Version
+import io.github.z4kn4fein.semver.VersionFormatException
 import java.nio.file.Paths
 import kotlin.io.path.pathString
 
@@ -11,10 +13,12 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
             .withEnvironment(System.getenv())
             .withWorkDirectory(workingDirectory)
             .withExePath(settings.executable)
-            .withParameters(listOf(
-                "--nocolor",
-                "--version"
-            ))
+            .withParameters(
+                listOf(
+                    "--nocolor",
+                    "--version"
+                )
+            )
             .createProcess()
     }
 
@@ -27,24 +31,28 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
         val parameters = mutableListOf(
             "-q",
             "--parseable",
-            "--format", "json",
+            "--format", "sarif"
         )
 
         if (configFile != null) {
-            parameters.addAll(listOf(
-                "--config-file", configFile
-            ))
+            parameters.addAll(
+                listOf(
+                    "--config-file", configFile
+                )
+            )
         }
 
         if (settings.offline) {
             parameters.add("--offline")
         }
 
-        parameters.addAll(listOf(
-            "--project-dir",
-            /* make sure we resolve symlinks: */
-            Paths.get(projectDirectory).toRealPath().pathString
-        ))
+        parameters.addAll(
+            listOf(
+                "--project-dir",
+                /* make sure we resolve symlinks: */
+                Paths.get(projectDirectory).toRealPath().pathString
+            )
+        )
 
         parameters.add(yamlFilePath)
 
@@ -57,7 +65,10 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
     }
 
     companion object {
+        val MIN_EXECUTABLE_VERSION = Version(6, 14, 3)
         val SUCCESS_RETURN_CODES = listOf(0, 2)
+
+        private val VERSIONS_REGEX = "ansible-lint (.*) using ansible (.*)".toRegex()
 
         fun getOutput(process: Process): Pair<String, String> {
             process.waitFor()
@@ -66,6 +77,25 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
                 process.inputStream.bufferedReader().use { it.readText() },
                 process.errorStream.bufferedReader().use { it.readText() }
             )
+        }
+
+        fun getVersions(versionOutput: String): Pair<Version, Version>? {
+            val versions = VERSIONS_REGEX.find(versionOutput)
+
+            return if (versions != null) {
+                val (ansibleLint, ansible) = versions.destructured
+
+                try {
+                    Pair(
+                        Version.parse(ansibleLint),
+                        Version.parse(ansible)
+                    )
+                } catch (versionFormatException: VersionFormatException) {
+                    null
+                }
+            } else {
+                null
+            }
         }
     }
 }

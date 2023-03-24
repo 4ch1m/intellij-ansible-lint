@@ -7,7 +7,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 
-class AnsibleLintAnnotatorOpenUrlAction(private val url: String) : AnsibleLintAnnotatorAction(message("action.show-detailed-information-online")) {
+class AnsibleLintAnnotatorOpenUrlAction(private val url: String) :
+    AnsibleLintAnnotatorAction(message("action.show-detailed-information-online")) {
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         BrowserUtil.browse(url)
     }
