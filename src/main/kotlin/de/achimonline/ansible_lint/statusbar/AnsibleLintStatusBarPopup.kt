@@ -47,7 +47,9 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
     override fun getWidgetState(file: VirtualFile?): WidgetState {
         val settingsState = ApplicationManager.getApplication().getService(AnsibleLintSettingsState::class.java)
 
-        if (!settingsState.settings.onlyRunWhenConfigFilePresent || AnsibleLintCommandFileConfig(project).locate() != null) {
+        if (!isYamlFile(file) ||
+            !settingsState.settings.onlyRunWhenConfigFilePresent ||
+            AnsibleLintCommandFileConfig(project).locate() != null) {
             return WidgetState.HIDDEN
         } else {
             @Suppress("DialogTitleCapitalization")
@@ -75,6 +77,10 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
     }
 
     override fun isEnabledForFile(file: VirtualFile?): Boolean {
+        return isYamlFile(file)
+    }
+
+    private fun isYamlFile(file: VirtualFile?): Boolean {
         if (file != null) {
             try {
                 val filePath = file.toNioPath().pathString

@@ -1,3 +1,12 @@
+## [1.4.1]
+
+### Added
+- rule tags are now being shown in annotation message (angle brackets)
+
+### Changed
+- several minor improvements
+- dependency updates
+
 ## [1.4.0]
 
 ### Added

@@ -164,7 +164,8 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
             ("${ansibleLintItem.description} ") +
             (if (ansibleLintItem.message.isNotEmpty()) "| ${ansibleLintItem.message} " else "") +
             (if (ansibleLintItem.helpText.isNotEmpty()) "(${ansibleLintItem.helpText}) " else "") +
-            ("| ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}")
+            ("| ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}") +
+            (if (ansibleLintItem.tags.isNotEmpty()) " <${ansibleLintItem.tags.joinToString(",")}>" else "")
         )
     }
 

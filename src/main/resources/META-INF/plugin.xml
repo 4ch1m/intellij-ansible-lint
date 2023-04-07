@@ -8,10 +8,6 @@
             Achim Seufert
     </vendor>
 
-    <description><![CDATA[
-    <a href="https://ansible-lint.readthedocs.io/">Ansible Lint</a> integration with automatic/continuous annotation of errors, warnings, and infos while editing.
-    ]]></description>
-
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">

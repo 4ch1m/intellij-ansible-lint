@@ -41,7 +41,8 @@ class AnsibleLintParser {
                             endColumn = region.endColumn,
                             helpText = rule.help.text,
                             helpUri = rule.helpUri.toString(),
-                            severity = sarifSeverityMapper(result.level)
+                            severity = sarifSeverityMapper(result.level),
+                            tags = rule.properties.tags
                         )
                     )
                 } catch (exception: Exception) {

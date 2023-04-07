@@ -79,7 +79,7 @@ If your package manager doesn't provide `ansible-lint` or you want to install a 
   chmod +x ~/ansible-lint/run.sh
   ```
 
-Reference to this script in the plugin; and you should be ready to go. 👍
+Reference this script in the plugin; and you should be ready to go. 👍
 
 ## Installation
 

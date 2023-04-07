@@ -55,7 +55,8 @@ class AnsibleLintAnnotatorTest {
         startLine: Int = (1..666).random(),
         helpText: String = "helpText-${UUID.randomUUID()}",
         helpUri: String = "helpUri-${UUID.randomUUID()}",
-        severity: HighlightSeverity = HighlightSeverity.ERROR
+        severity: HighlightSeverity = HighlightSeverity.ERROR,
+        tags: Set<String> = setOf("testTag1", "testTag2")
     ): AnsibleLintItem {
         return AnsibleLintItem(
             ruleId = ruleId,
@@ -64,7 +65,8 @@ class AnsibleLintAnnotatorTest {
             startLine = startLine,
             helpText = helpText,
             helpUri = helpUri,
-            severity = severity
+            severity = severity,
+            tags = tags
         )
     }
 
@@ -189,23 +191,35 @@ class AnsibleLintAnnotatorTest {
     fun getAnnotationMessage() {
         var ansibleLintItem = buildAnsibleLintItem()
         assertEquals(
-            "${ansibleLintItem.description} | ${ansibleLintItem.message} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
+            "${ansibleLintItem.description} | ${ansibleLintItem.message} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId} <${ansibleLintItem.tags.joinToString(",")}>",
             ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
         )
 
         ansibleLintItem = buildAnsibleLintItem(message = "")
         assertEquals(
-            "${ansibleLintItem.description} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
+            "${ansibleLintItem.description} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId} <${ansibleLintItem.tags.joinToString(",")}>",
             ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
         )
 
         ansibleLintItem = buildAnsibleLintItem(helpText = "")
         assertEquals(
-            "${ansibleLintItem.description} | ${ansibleLintItem.message} | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
+            "${ansibleLintItem.description} | ${ansibleLintItem.message} | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId} <${ansibleLintItem.tags.joinToString(",")}>",
+            ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
+        )
+
+        ansibleLintItem = buildAnsibleLintItem(tags = emptySet())
+        assertEquals(
+            "${ansibleLintItem.description} | ${ansibleLintItem.message} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
             ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
         )
 
         ansibleLintItem = buildAnsibleLintItem(message = "", helpText = "")
+        assertEquals(
+            "${ansibleLintItem.description} | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId} <${ansibleLintItem.tags.joinToString(",")}>",
+            ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
+        )
+
+        ansibleLintItem = buildAnsibleLintItem(message = "", helpText = "", tags = emptySet())
         assertEquals(
             "${ansibleLintItem.description} | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId}",
             ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, false)
@@ -213,11 +227,7 @@ class AnsibleLintAnnotatorTest {
 
         ansibleLintItem = buildAnsibleLintItem()
         assertEquals(
-            "${message("annotation.ignored-prefix")} ${ansibleLintItem.description} | ${ansibleLintItem.message} (${ansibleLintItem.helpText}) | ${
-                message(
-                    "annotation.rule-id-prefix"
-                )
-            } ${ansibleLintItem.ruleId}",
+            "${message("annotation.ignored-prefix")} ${ansibleLintItem.description} | ${ansibleLintItem.message} (${ansibleLintItem.helpText}) | ${message("annotation.rule-id-prefix")} ${ansibleLintItem.ruleId} <${ansibleLintItem.tags.joinToString(",")}>",
             ansibleLintAnnotator.getAnnotationMessage(ansibleLintItem, true)
         )
     }

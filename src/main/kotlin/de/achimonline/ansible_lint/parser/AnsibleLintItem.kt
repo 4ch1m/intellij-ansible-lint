@@ -12,5 +12,6 @@ data class AnsibleLintItem(
     val endColumn: Int? = null,
     val helpText: String,
     val helpUri: String,
-    val severity: HighlightSeverity = HighlightSeverity.INFORMATION
+    val severity: HighlightSeverity = HighlightSeverity.INFORMATION,
+    val tags: Set<String> = emptySet()
 )
