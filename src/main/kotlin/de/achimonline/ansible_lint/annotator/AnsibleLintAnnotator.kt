@@ -24,12 +24,12 @@ import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileIgnore
 import de.achimonline.ansible_lint.common.AnsibleLintHelper
+import de.achimonline.ansible_lint.common.AnsibleLintTempEnv
 import de.achimonline.ansible_lint.notification.AnsibleLintNotification
 import de.achimonline.ansible_lint.settings.AnsibleLintConfigurable
 import de.achimonline.ansible_lint.settings.AnsibleLintSettings
 import de.achimonline.ansible_lint.settings.AnsibleLintSettingsState
 import java.io.File
-import java.io.IOException
 import java.util.concurrent.ExecutionException
 import kotlin.io.path.pathString
 
@@ -70,19 +70,21 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
         check:
         - [How to trigger ExternalAnnotator running immediately after saving the code change?](https://intellij-support.jetbrains.com/hc/en-us/community/posts/360004284939-How-to-trigger-ExternalAnnotator-running-immediately-after-saving-the-code-change-)
         - [Only trigger externalAnnotator when the file system is in sync](https://intellij-support.jetbrains.com/hc/en-us/community/posts/115000337510-Only-trigger-externalAnnotator-when-the-file-system-is-in-sync)
+
+         That's why this workaround has to be implemented/used. :-(
          */
-        val tempFolderAndFile = AnsibleLintHelper.createTempFolderAndFile(
+        val tempEnv = AnsibleLintTempEnv(
             projectBasePath = projectBasePath,
-            file = collectedInformation.file,
-            content = collectedInformation.editor.document.text
+            fileToLint = collectedInformation.file,
+            fileContent = collectedInformation.editor.document.text
         )
 
         try {
             val lintProcess = AnsibleLintCommandLine(settingsState.settings).createLintProcess(
                 workingDirectory = projectBasePath,
-                projectDirectory = tempFolderAndFile.first.path,
+                projectDirectory = tempEnv.directory.path,
                 configFile = configFile?.absolutePath,
-                yamlFilePath = tempFolderAndFile.second.path
+                yamlFilePath = tempEnv.file.path
             )
 
             val output = AnsibleLintCommandLine.getOutput(lintProcess)
@@ -115,10 +117,8 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
         } catch (interruptedException: InterruptedException) {
             LOG.error("'ansible-lint' got interrupted during execution: ${interruptedException.message}")
         } finally {
-            try {
-                tempFolderAndFile.first.deleteRecursively()
-            } catch (_: IOException) {
-                LOG.warn("Unable to delete temp-folder [${tempFolderAndFile.first.path}].")
+            if (!tempEnv.purge()) {
+                LOG.warn("Failed to remove temporary folder [${tempEnv.directory}].")
             }
         }
 

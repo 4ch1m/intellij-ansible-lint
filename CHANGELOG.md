@@ -1,3 +1,13 @@
+## [1.5.0]
+
+### Fixed
+- incorrect "role not found" (`syntax-check[specific]`) errors
+
+### Changed
+- several minor improvements/additions
+- dependency updates
+- Gradle-wrapper update
+
 ## [1.4.1]
 
 ### Added

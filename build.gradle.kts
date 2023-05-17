@@ -1,5 +1,4 @@
 import org.jetbrains.changelog.Changelog
-import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 fun properties(key: String) = project.findProperty(key).toString()
 
@@ -8,10 +7,10 @@ description = properties("pluginDescription")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.8.20"
+    id("org.jetbrains.kotlin.jvm") version "1.8.21"
     id("org.jetbrains.intellij") version "1.13.3"
     id("org.jetbrains.changelog") version "2.0.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.20"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.8.21"
     id("org.jsonschema2pojo") version "1.2.1"
     id("com.github.ben-manes.versions") version "0.46.0"
 }
@@ -20,14 +19,11 @@ repositories {
     mavenCentral()
 }
 
-jsonSchema2Pojo {
-    // JSON schema for "Static Analysis Results Interchange Format (SARIF) Version 2.1.0"; check:
-    //  https://github.com/ansible/ansible-lint/blob/e4b9e555b5aa9d70ea1270aac9d8282850d5719a/src/ansiblelint/formatters/__init__.py#L203-L205
-
-    sourceFiles = files("${projectDir}/src/main/resources/json/sarif.json")
-    targetDirectory = file("${projectDir}/src/generated/java")
-    targetPackage = "de.achimonline.ansible_lint.parser.sarif"
-    removeOldOutput = true
+dependencies {
+    implementation("com.charleskorn.kaml:kaml-jvm:0.53.0")
+    implementation("io.github.z4kn4fein:semver-jvm:1.4.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
 }
 
 sourceSets {
@@ -43,21 +39,26 @@ intellij {
     updateSinceUntilBuild.set(false)
 }
 
-dependencies {
-    implementation("com.charleskorn.kaml:kaml-jvm:0.53.0")
-    implementation("io.github.z4kn4fein:semver-jvm:1.4.2")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
-}
-
 changelog {
     version.set(properties("pluginVersion"))
 }
 
+jsonSchema2Pojo {
+    // JSON schema for "Static Analysis Results Interchange Format (SARIF) Version 2.1.0"; check:
+    //  https://github.com/ansible/ansible-lint/blob/e4b9e555b5aa9d70ea1270aac9d8282850d5719a/src/ansiblelint/formatters/__init__.py#L203-L205
+
+    sourceFiles = files("${projectDir}/src/main/resources/json/sarif.json")
+    targetDirectory = file("${projectDir}/src/generated/java")
+    targetPackage = "de.achimonline.ansible_lint.parser.sarif"
+    removeOldOutput = true
+}
+
 tasks {
-    withType<JavaCompile> {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
+    properties("javaVersion").let {
+        withType<JavaCompile> {
+            sourceCompatibility = it
+            targetCompatibility = it
+        }
     }
 
     withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
@@ -65,7 +66,7 @@ tasks {
         kotlinOptions.jvmTarget = properties("kotlinJvmTarget")
     }
 
-    withType<DependencyUpdatesTask> {
+    dependencyUpdates {
         rejectVersionIf {
             (
                 listOf("RELEASE", "FINAL", "GA").any { candidate.version.uppercase().contains(it) }

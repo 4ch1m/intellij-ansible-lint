@@ -3,7 +3,6 @@ package de.achimonline.ansible_lint.common
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.PsiFile
 import org.jetbrains.jps.model.serialization.PathMacroUtil
 import org.junit.Before
 import org.junit.Test
@@ -21,12 +20,6 @@ import kotlin.io.path.pathString
 class AnsibleLintHelperTest {
     @Mock
     internal lateinit var project: Project
-
-    @Mock
-    internal lateinit var editorPsiFile: PsiFile
-
-    @Mock
-    internal lateinit var editorFile: VirtualFile
 
     @Mock
     internal lateinit var projectRootManager: ProjectRootManager
@@ -49,27 +42,6 @@ class AnsibleLintHelperTest {
         }
 
         whenever(projectRootManager.contentRoots).thenReturn(arrayOf(projectRootManagerContentRoot))
-    }
-
-    @Test
-    fun createTempFile() {
-        val fileName = "test.yml"
-        val intermediateDirectory = "tasks"
-        val filePath = "${projectBasePath}${File.separator}${intermediateDirectory}${File.separator}${fileName}"
-        val fileContent = "testContent"
-
-        whenever(editorPsiFile.virtualFile) doReturn editorFile
-        whenever(editorFile.path) doReturn filePath
-        whenever(editorFile.name) doReturn fileName
-
-        val tempFolderAndFile = AnsibleLintHelper.createTempFolderAndFile(projectBasePath, editorPsiFile, fileContent)
-
-        assertNotNull(tempFolderAndFile.first)
-
-        assertTrue(tempFolderAndFile.second.path.startsWith(tempFolderAndFile.first.path))
-        assertTrue(tempFolderAndFile.second.path.endsWith("${File.separator}${intermediateDirectory}${File.separator}${fileName}"))
-
-        assertEquals(fileContent, tempFolderAndFile.second.readText())
     }
 
     @Test
