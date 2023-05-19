@@ -1,3 +1,8 @@
+## [1.5.1]
+
+### Fixed
+- `ansible-lint` version detection in settings UI
+
 ## [1.5.0]
 
 ### Fixed

@@ -68,7 +68,7 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
         val MIN_EXECUTABLE_VERSION = Version(6, 14, 3)
         val SUCCESS_RETURN_CODES = listOf(0, 2)
 
-        private val VERSIONS_REGEX = "ansible-lint (.*) using ansible (.*)".toRegex()
+            private val VERSIONS_REGEX = "ansible-lint (.*) using (ansible |ansible-core:)([^ ]*)".toRegex()
 
         fun getOutput(process: Process): Pair<String, String> {
             process.waitFor()
@@ -83,7 +83,7 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
             val versions = VERSIONS_REGEX.find(versionOutput)
 
             return if (versions != null) {
-                val (ansibleLint, ansible) = versions.destructured
+                val (ansibleLint, _, ansible, _) = versions.destructured
 
                 try {
                     Pair(
