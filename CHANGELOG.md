@@ -1,3 +1,8 @@
+## [1.5.2]
+
+### Fixed
+- proper deletion of temporary files/directories
+
 ## [1.5.1]
 
 ### Fixed

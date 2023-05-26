@@ -32,6 +32,7 @@ class AnsibleLintTempEnv(
         val parentDirectories = relativeFilePath.split(File.separator).dropLast(1)
 
         directory = createTempDirectory().toFile()
+        directory.deleteOnExit()
 
         val directoryPathPlusIntermediateDirectories =
             "${directory.absolutePath}${File.separator}${parentDirectories.joinToString(File.separator)}"
@@ -78,7 +79,14 @@ class AnsibleLintTempEnv(
 
     fun purge(): Boolean {
         return try {
-            directory.delete()
+            // non-empty dirs can't be deleted;
+            // so we clean all temp-files/-dirs manually
+            Files.walk(directory.toPath())
+                .sorted(Comparator.reverseOrder())
+                .forEach {
+                    Files.delete(it)
+                }
+            true
         } catch (_: Exception) {
             false
         }
