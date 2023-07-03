@@ -1,235 +1,235 @@
 {
-  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
-  "version": "2.1.0",
-  "runs": [
-    {
-      "tool": {
-        "driver": {
-          "name": "ansible-lint",
-          "version": "6.16.1",
-          "informationUri": "https://github.com/ansible/ansible-lint",
-          "rules": [
-            {
-              "id": "name[casing]",
-              "name": "name[casing]",
-              "shortDescription": {
-                "text": "All names should start with an uppercase letter."
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "help": {
-                "text": "All tasks and plays should have a distinct name for readability and for ``--start-at-task`` to work"
-              },
-              "helpUri": "https://ansible-lint.readthedocs.io/rules/name/",
-              "properties": {
-                "tags": [
-                  "idiom"
-                ]
-              }
+    "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+    "version": "2.1.0",
+    "runs": [
+        {
+            "tool": {
+                "driver": {
+                    "name": "ansible-lint",
+                    "version": "6.17.2",
+                    "informationUri": "https://github.com/ansible/ansible-lint",
+                    "rules": [
+                        {
+                            "id": "name[casing]",
+                            "name": "name[casing]",
+                            "shortDescription": {
+                                "text": "All names should start with an uppercase letter."
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "help": {
+                                "text": "All tasks and plays should have a distinct name for readability and for ``--start-at-task`` to work"
+                            },
+                            "helpUri": "https://ansible-lint.readthedocs.io/rules/name/",
+                            "properties": {
+                                "tags": [
+                                    "idiom"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "fqcn[action-core]",
+                            "name": "fqcn[action-core]",
+                            "shortDescription": {
+                                "text": "Use FQCN for builtin module actions (debug)."
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "help": {
+                                "text": "Check whether actions are using using full qualified collection names."
+                            },
+                            "helpUri": "https://ansible-lint.readthedocs.io/rules/fqcn/",
+                            "properties": {
+                                "tags": [
+                                    "formatting"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "risky-file-permissions",
+                            "name": "risky-file-permissions",
+                            "shortDescription": {
+                                "text": "File permissions unset or incorrect."
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "help": {
+                                "text": "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like `mode: 0644` to avoid hitting this rule. Special `preserve` value is accepted only by `copy`, `template` modules."
+                            },
+                            "helpUri": "https://ansible-lint.readthedocs.io/rules/risky-file-permissions/",
+                            "properties": {
+                                "tags": [
+                                    "unpredictability"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "jinja[spacing]",
+                            "name": "jinja[spacing]",
+                            "shortDescription": {
+                                "text": "Jinja2 spacing could be improved: {{test                }} -> {{ test }}"
+                            },
+                            "defaultConfiguration": {
+                                "level": "warning"
+                            },
+                            "help": {
+                                "text": ""
+                            },
+                            "helpUri": "https://ansible-lint.readthedocs.io/rules/jinja/",
+                            "properties": {
+                                "tags": [
+                                    "formatting"
+                                ]
+                            }
+                        },
+                        {
+                            "id": "yaml[commas]",
+                            "name": "yaml[commas]",
+                            "shortDescription": {
+                                "text": "Too many spaces after comma"
+                            },
+                            "defaultConfiguration": {
+                                "level": "error"
+                            },
+                            "help": {
+                                "text": ""
+                            },
+                            "helpUri": "https://ansible-lint.readthedocs.io/rules/yaml/",
+                            "properties": {
+                                "tags": [
+                                    "formatting",
+                                    "yaml"
+                                ]
+                            }
+                        }
+                    ]
+                }
             },
-            {
-              "id": "fqcn[action-core]",
-              "name": "fqcn[action-core]",
-              "shortDescription": {
-                "text": "Use FQCN for builtin module actions (debug)."
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "help": {
-                "text": "Check whether actions are using using full qualified collection names."
-              },
-              "helpUri": "https://ansible-lint.readthedocs.io/rules/fqcn/",
-              "properties": {
-                "tags": [
-                  "formatting"
-                ]
-              }
-            },
-            {
-              "id": "risky-file-permissions",
-              "name": "risky-file-permissions",
-              "shortDescription": {
-                "text": "File permissions unset or incorrect."
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "help": {
-                "text": "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like `mode: 0644` to avoid hitting this rule. Special `preserve` value is accepted only by `copy`, `template` modules."
-              },
-              "helpUri": "https://ansible-lint.readthedocs.io/rules/risky-file-permissions/",
-              "properties": {
-                "tags": [
-                  "unpredictability"
-                ]
-              }
-            },
-            {
-              "id": "jinja[spacing]",
-              "name": "jinja[spacing]",
-              "shortDescription": {
-                "text": "Jinja2 spacing could be improved: {{test                }} -> {{ test }}"
-              },
-              "defaultConfiguration": {
-                "level": "warning"
-              },
-              "help": {
-                "text": ""
-              },
-              "helpUri": "https://ansible-lint.readthedocs.io/rules/jinja/",
-              "properties": {
-                "tags": [
-                  "formatting"
-                ]
-              }
-            },
-            {
-              "id": "yaml[commas]",
-              "name": "yaml[commas]",
-              "shortDescription": {
-                "text": "Too many spaces after comma"
-              },
-              "defaultConfiguration": {
-                "level": "error"
-              },
-              "help": {
-                "text": ""
-              },
-              "helpUri": "https://ansible-lint.readthedocs.io/rules/yaml/",
-              "properties": {
-                "tags": [
-                  "formatting",
-                  "yaml"
-                ]
-              }
+            "columnKind": "utf16CodeUnits",
+            "results": [
+                {
+                    "ruleId": "name[casing]",
+                    "message": {
+                        "text": "All names should start with an uppercase letter."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "test-playbook.yml",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 1
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "fqcn[action-core]",
+                    "message": {
+                        "text": "Use `ansible.builtin.debug` or `ansible.legacy.debug` instead."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "test-playbook.yml",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 6
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "name[casing]",
+                    "message": {
+                        "text": "Task/Handler: test2"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "test-playbook.yml",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 10
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "risky-file-permissions",
+                    "message": {
+                        "text": "Task/Handler: Test3"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "test-playbook.yml",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 14
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "jinja[spacing]",
+                    "message": {
+                        "text": "Jinja2 template rewrite recommendation: `{{ test }}`."
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "test-playbook.yml",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 21
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "ruleId": "yaml[commas]",
+                    "message": {
+                        "text": "Too many spaces after comma"
+                    },
+                    "locations": [
+                        {
+                            "physicalLocation": {
+                                "artifactLocation": {
+                                    "uri": "test-playbook.yml",
+                                    "uriBaseId": "SRCROOT"
+                                },
+                                "region": {
+                                    "startLine": 23
+                                }
+                            }
+                        }
+                    ]
+                }
+            ],
+            "originalUriBaseIds": {
+                "SRCROOT": {
+                    "uri": "file:///tmp/"
+                }
             }
-          ]
         }
-      },
-      "columnKind": "utf16CodeUnits",
-      "results": [
-        {
-          "ruleId": "name[casing]",
-          "message": {
-            "text": "All names should start with an uppercase letter."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "test-playbook.yml",
-                  "uriBaseId": "SRCROOT"
-                },
-                "region": {
-                  "startLine": 1
-                }
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "fqcn[action-core]",
-          "message": {
-            "text": "Use `ansible.builtin.debug` or `ansible.legacy.debug` instead."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "test-playbook.yml",
-                  "uriBaseId": "SRCROOT"
-                },
-                "region": {
-                  "startLine": 6
-                }
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "name[casing]",
-          "message": {
-            "text": "Task/Handler: test2"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "test-playbook.yml",
-                  "uriBaseId": "SRCROOT"
-                },
-                "region": {
-                  "startLine": 10
-                }
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "risky-file-permissions",
-          "message": {
-            "text": "Task/Handler: Test3"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "test-playbook.yml",
-                  "uriBaseId": "SRCROOT"
-                },
-                "region": {
-                  "startLine": 14
-                }
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "jinja[spacing]",
-          "message": {
-            "text": "Jinja2 template rewrite recommendation: `{{ test }}`."
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "test-playbook.yml",
-                  "uriBaseId": "SRCROOT"
-                },
-                "region": {
-                  "startLine": 21
-                }
-              }
-            }
-          ]
-        },
-        {
-          "ruleId": "yaml[commas]",
-          "message": {
-            "text": "Too many spaces after comma"
-          },
-          "locations": [
-            {
-              "physicalLocation": {
-                "artifactLocation": {
-                  "uri": "test-playbook.yml",
-                  "uriBaseId": "SRCROOT"
-                },
-                "region": {
-                  "startLine": 23
-                }
-              }
-            }
-          ]
-        }
-      ],
-      "originalUriBaseIds": {
-        "SRCROOT": {
-          "uri": "file:///tmp/"
-        }
-      }
-    }
-  ]
+    ]
 }

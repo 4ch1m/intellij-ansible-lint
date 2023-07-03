@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 import java.io.File
@@ -37,19 +38,19 @@ class AnsibleLintHelperTest {
 
     @Before
     fun setUp() {
-        Mockito.mockStatic(ProjectRootManager::class.java, Mockito.CALLS_REAL_METHODS).use {
-            it.`when`<Any> { ProjectRootManager.getInstance(project) }.thenReturn(projectRootManager)
+        mockStatic(ProjectRootManager::class.java, Mockito.CALLS_REAL_METHODS).use { mockedProjectRootManager ->
+            mockedProjectRootManager.`when`<Any> { ProjectRootManager.getInstance(project) }.doReturn(projectRootManager)
         }
 
-        whenever(projectRootManager.contentRoots).thenReturn(arrayOf(projectRootManagerContentRoot))
+        whenever(projectRootManager.contentRoots).doReturn(arrayOf(projectRootManagerContentRoot))
     }
 
     @Test
     fun getProjectBasePath_viaProjectRootManager() {
-        whenever(projectRootManagerContentRoot.children).thenReturn(arrayOf(projectRootManagerContentRootChild))
-        whenever(projectRootManagerContentRootChild.name).thenReturn(PathMacroUtil.DIRECTORY_STORE_NAME)
-        whenever(projectRootManagerContentRoot.toNioPath()).thenReturn(projectRootManagerContentRootPath)
-        whenever(projectRootManagerContentRootPath.pathString).thenReturn(projectBasePath)
+        whenever(projectRootManagerContentRoot.children).doReturn(arrayOf(projectRootManagerContentRootChild))
+        whenever(projectRootManagerContentRootChild.name).doReturn(PathMacroUtil.DIRECTORY_STORE_NAME)
+        whenever(projectRootManagerContentRoot.toNioPath()).doReturn(projectRootManagerContentRootPath)
+        whenever(projectRootManagerContentRootPath.pathString).doReturn(projectBasePath)
 
         val projectBasePath = AnsibleLintHelper.getProjectBasePath(project)
 
@@ -60,8 +61,8 @@ class AnsibleLintHelperTest {
 
     @Test
     fun getProjectBasePath_viaBasePathProperty() {
-        whenever(projectRootManagerContentRoot.children).thenReturn(emptyArray())
-        whenever(project.basePath).thenReturn(projectBasePath)
+        whenever(projectRootManagerContentRoot.children).doReturn(emptyArray())
+        whenever(project.basePath).doReturn(projectBasePath)
 
         val projectBasePath = AnsibleLintHelper.getProjectBasePath(project)
 

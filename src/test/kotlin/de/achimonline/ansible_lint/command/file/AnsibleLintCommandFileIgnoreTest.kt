@@ -12,6 +12,7 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.mockStatic
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 import java.io.File
 import kotlin.io.path.createTempDirectory
@@ -46,15 +47,15 @@ class AnsibleLintCommandFileIgnoreTest {
 
         ignoreFile = File("${projectDir}${File.separator}${AnsibleLintCommandFileIgnore.DEFAULT}")
 
-        mockStatic(ProjectRootManager::class.java, Mockito.CALLS_REAL_METHODS).use {
-            it.`when`<Any> { ProjectRootManager.getInstance(project) }.thenReturn(projectRootManager)
+        mockStatic(ProjectRootManager::class.java, Mockito.CALLS_REAL_METHODS).use { mockedProjectRootManager ->
+            mockedProjectRootManager.`when`<Any> { ProjectRootManager.getInstance(project) }.doReturn(projectRootManager)
         }
 
-        whenever(projectRootManager.contentRoots).thenReturn(arrayOf(contentRoot))
-        whenever(contentRoot.children).thenReturn(emptyArray())
-        whenever(project.basePath).thenReturn(projectDir.absolutePath)
-        whenever(editorPsiFile.virtualFile).thenReturn(editorFile)
-        whenever(editorFile.path).thenReturn("${projectDir.absolutePath}${File.separator}${editorFilePath}")
+        whenever(projectRootManager.contentRoots).doReturn(arrayOf(contentRoot))
+        whenever(contentRoot.children).doReturn(emptyArray())
+        whenever(project.basePath).doReturn(projectDir.absolutePath)
+        whenever(editorPsiFile.virtualFile).doReturn(editorFile)
+        whenever(editorFile.path).doReturn("${projectDir.absolutePath}${File.separator}${editorFilePath}")
     }
 
     @Test

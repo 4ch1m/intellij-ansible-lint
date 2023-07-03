@@ -31,6 +31,6 @@ docker \
   --volume "${SCRIPT_PATH}/output":/tmp/output \
   --workdir /tmp \
   python:3 \
-  /bin/bash -c "${INSTALL_CMD} && ${LINT_CMD} | tee /tmp/output/${SARIF_OUTPUT_FILE}"
+  /bin/bash -c "${INSTALL_CMD} && ${LINT_CMD} | python -m json.tool | tee /tmp/output/${SARIF_OUTPUT_FILE}"
 
 cp "${SCRIPT_PATH}/output/${SARIF_OUTPUT_FILE}" "${SCRIPT_PATH}/../src/test/resources/${SARIF_OUTPUT_FILE}"

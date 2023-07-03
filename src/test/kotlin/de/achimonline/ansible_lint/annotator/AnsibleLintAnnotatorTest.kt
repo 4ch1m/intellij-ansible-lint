@@ -22,6 +22,7 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.mockStatic
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 import java.util.*
@@ -74,8 +75,8 @@ class AnsibleLintAnnotatorTest {
     fun setUp() {
         whenever(psiFile.project).doReturn(project)
 
-        Mockito.mockStatic(PsiDocumentManager::class.java, Mockito.CALLS_REAL_METHODS).use {
-            it.`when`<Any> { PsiDocumentManager.getInstance(project) }.thenReturn(psiDocumentManager)
+        mockStatic(PsiDocumentManager::class.java, Mockito.CALLS_REAL_METHODS).use { mockedPsiDocumentManager ->
+            mockedPsiDocumentManager.`when`<Any> { PsiDocumentManager.getInstance(project) }.doReturn(psiDocumentManager)
         }
 
         whenever(psiDocumentManager.getDocument(psiFile)).doReturn(document)

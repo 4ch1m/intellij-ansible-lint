@@ -11,4 +11,5 @@ SCHEMA_URL=$(jq '.["$schema"]' "${SCRIPT_PATH}/output/sarif_result.json" | tr -d
 curl \
   --silent \
   --location \
-  "${SCHEMA_URL}" > "${SCRIPT_PATH}/../src/main/resources/json/sarif.json"
+  "${SCHEMA_URL}" \
+  | dos2unix > "${SCRIPT_PATH}/../src/main/resources/json/sarif.json"

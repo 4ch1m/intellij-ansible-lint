@@ -1,3 +1,11 @@
+## [1.5.3]
+
+### Changed
+- dependency updates
+- updated test-resources
+- Gradle-wrapper update
+- several minor improvements
+
 ## [1.5.2]
 
 ### Fixed

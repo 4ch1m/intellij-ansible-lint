@@ -25,7 +25,7 @@ class AnsibleLintTempEnvTest {
     @Mock
     internal lateinit var editorFile: VirtualFile
 
-    internal lateinit var testDir: Path
+    private lateinit var testDir: Path
 
     @Before
     fun setUp() {
