@@ -1,3 +1,10 @@
+## [1.5.4]
+
+### Changed
+- updated SARIF schema
+- dependency updates
+- Gradle-wrapper update
+
 ## [1.5.3]
 
 ### Changed
