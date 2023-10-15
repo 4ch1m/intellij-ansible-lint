@@ -16,25 +16,25 @@
 
 #### Annotations on all tasks with issues:
 
-> ![editor1](screenshots/editor1.png)
+![editor1](screenshots/editor1.png)
 
 #### Concrete details on mouseover:
 
-> ![editor2](screenshots/editor2.png)
+![editor2](screenshots/editor2.png)
 
 #### Different visualization based on severity:
 
-> ![editor3](screenshots/editor3.png)
+![editor3](screenshots/editor3.png)
 
 #### Quick actions:
 
-> ![editor4](screenshots/editor4.png)
+![editor4](screenshots/editor4.png)
 
-> ![editor5](screenshots/editor5.png)
+![editor5](screenshots/editor5.png)
 
 #### Security relevant information:
 
-> ![editor6](screenshots/editor6.png)
+![editor6](screenshots/editor6.png)
 
 ## Requirements
 
@@ -95,7 +95,7 @@ Or go to the [plugin page](https://plugins.jetbrains.com/plugin/20905-ansible-li
 
 After installing the plugin you should go to the settings dialog and hit the `Test` button to check if `ansible-lint` is fully operable.
 
-> ![settings](screenshots/settings.png)
+![settings](screenshots/settings.png)
 
 Adjust the command path and/or options as needed.
 
@@ -108,7 +108,7 @@ By default, the plugin will only start linting YAML-files if your project root c
 
 You can eiter create one manually or use the statusbar pop-up actions; which will be available when a YAML file is opened (and no config file is present):
 
-> ![statusbar](screenshots/statusbar.png)
+![statusbar](screenshots/statusbar.png)
 
 It is possible to use the plugin without a config file (see settings dialog above).
 However, this would mean that **every** YAML-file will unnecessarily be passed to `ansible-lint`; even in Non-Ansible projects.
