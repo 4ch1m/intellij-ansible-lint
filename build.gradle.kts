@@ -7,12 +7,12 @@ description = properties("pluginDescription")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.0"
-    id("org.jetbrains.intellij") version "1.15.0"
-    id("org.jetbrains.changelog") version "2.1.2"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.0"
+    id("org.jetbrains.kotlin.jvm") version "1.9.10"
+    id("org.jetbrains.intellij") version "1.16.0"
+    id("org.jetbrains.changelog") version "2.2.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
     id("org.jsonschema2pojo") version "1.2.1"
-    id("com.github.ben-manes.versions") version "0.47.0"
+    id("com.github.ben-manes.versions") version "0.49.0"
 }
 
 repositories {

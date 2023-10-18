@@ -1,3 +1,12 @@
+## [1.5.5]
+
+### Fixed
+- proper visualization of severity levels (fixed in ansible-lint 6.21.0)
+
+### Changed
+- dependency updates
+- Gradle-wrapper update
+
 ## [1.5.4]
 
 ### Changed

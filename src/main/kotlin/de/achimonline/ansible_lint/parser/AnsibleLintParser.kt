@@ -4,7 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.diagnostic.logger
-import de.achimonline.ansible_lint.parser.sarif.Result.Level
+import de.achimonline.ansible_lint.parser.sarif.ReportingConfiguration.Level
 import de.achimonline.ansible_lint.parser.sarif.Sarif
 
 private val LOG = logger<AnsibleLintParser>()
@@ -41,7 +41,7 @@ class AnsibleLintParser {
                             endColumn = region.endColumn,
                             helpText = rule.help.text,
                             helpUri = rule.helpUri.toString(),
-                            severity = sarifSeverityMapper(result.level),
+                            severity = sarifSeverityMapper(rule.defaultConfiguration.level),
                             tags = rule.properties.tags
                         )
                     )

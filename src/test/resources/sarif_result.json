@@ -6,7 +6,7 @@
             "tool": {
                 "driver": {
                     "name": "ansible-lint",
-                    "version": "6.17.2",
+                    "version": "6.21.0",
                     "informationUri": "https://github.com/ansible/ansible-lint",
                     "rules": [
                         {
@@ -16,7 +16,7 @@
                                 "text": "All names should start with an uppercase letter."
                             },
                             "defaultConfiguration": {
-                                "level": "error"
+                                "level": "warning"
                             },
                             "help": {
                                 "text": "All tasks and plays should have a distinct name for readability and for ``--start-at-task`` to work"
@@ -35,7 +35,7 @@
                                 "text": "Use FQCN for builtin module actions (debug)."
                             },
                             "defaultConfiguration": {
-                                "level": "error"
+                                "level": "warning"
                             },
                             "help": {
                                 "text": "Check whether actions are using using full qualified collection names."
@@ -92,7 +92,7 @@
                                 "text": "Too many spaces after comma"
                             },
                             "defaultConfiguration": {
-                                "level": "error"
+                                "level": "warning"
                             },
                             "help": {
                                 "text": ""
@@ -112,6 +112,7 @@
             "results": [
                 {
                     "ruleId": "name[casing]",
+                    "level": "error",
                     "message": {
                         "text": "All names should start with an uppercase letter."
                     },
@@ -131,6 +132,7 @@
                 },
                 {
                     "ruleId": "fqcn[action-core]",
+                    "level": "error",
                     "message": {
                         "text": "Use `ansible.builtin.debug` or `ansible.legacy.debug` instead."
                     },
@@ -150,6 +152,7 @@
                 },
                 {
                     "ruleId": "name[casing]",
+                    "level": "error",
                     "message": {
                         "text": "Task/Handler: test2"
                     },
@@ -169,6 +172,7 @@
                 },
                 {
                     "ruleId": "risky-file-permissions",
+                    "level": "error",
                     "message": {
                         "text": "Task/Handler: Test3"
                     },
@@ -188,6 +192,7 @@
                 },
                 {
                     "ruleId": "jinja[spacing]",
+                    "level": "warning",
                     "message": {
                         "text": "Jinja2 template rewrite recommendation: `{{ test }}`."
                     },
@@ -207,6 +212,7 @@
                 },
                 {
                     "ruleId": "yaml[commas]",
+                    "level": "error",
                     "message": {
                         "text": "Too many spaces after comma"
                     },

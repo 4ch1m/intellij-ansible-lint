@@ -1,7 +1,7 @@
 package de.achimonline.ansible_lint.parser
 
 import com.intellij.lang.annotation.HighlightSeverity
-import de.achimonline.ansible_lint.parser.sarif.Result.Level
+import de.achimonline.ansible_lint.parser.sarif.ReportingConfiguration.Level
 import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
