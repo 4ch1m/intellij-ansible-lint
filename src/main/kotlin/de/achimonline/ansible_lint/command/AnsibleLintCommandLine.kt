@@ -83,12 +83,19 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
             val versions = VERSIONS_REGEX.find(versionOutput)
 
             return if (versions != null) {
-                val (ansibleLint, _, ansible, _) = versions.destructured
+                var (ansibleLint, _, ansible, _) = versions.destructured
+
+                // development-builds of 'ansible-lint' use version numbers that aren't SemVer conform;
+                // this workaround is needed to make parsing possible
+                if (ansibleLint.contains("dev")) {
+                    ansibleLint = ansibleLint.replace("dev", "")
+                    ansibleLint += "-dev"
+                }
 
                 try {
                     Pair(
-                        Version.parse(ansibleLint),
-                        Version.parse(ansible)
+                        Version.parse(ansibleLint, strict = false),
+                        Version.parse(ansible, strict = false)
                     )
                 } catch (versionFormatException: VersionFormatException) {
                     null

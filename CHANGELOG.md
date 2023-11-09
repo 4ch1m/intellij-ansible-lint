@@ -1,3 +1,11 @@
+## [1.5.6]
+
+### Fixed
+- improved/fixed version parsing for "Test"-feature in settings dialog
+
+### Changed
+- dependency updates
+
 ## [1.5.5]
 
 ### Fixed
