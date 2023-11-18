@@ -11,6 +11,7 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
     fun createVersionCheckProcess(workingDirectory: String): Process {
         return GeneralCommandLine()
             .withEnvironment(System.getenv())
+            .withEnvironment("PATH", settings.path)
             .withWorkDirectory(workingDirectory)
             .withExePath(settings.executable)
             .withParameters(
@@ -58,6 +59,7 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
 
         return GeneralCommandLine()
             .withEnvironment(System.getenv())
+            .withEnvironment("PATH", settings.path)
             .withWorkDirectory(workingDirectory)
             .withExePath(settings.executable)
             .withParameters(parameters)
