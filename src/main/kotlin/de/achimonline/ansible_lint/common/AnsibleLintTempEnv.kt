@@ -12,11 +12,13 @@ import kotlin.io.path.createTempDirectory
  * the "file kind" (playbook, galaxy, tasks, vars, etc.).
  * But since we can't operate/pass the original file(path) to the linter
  * (see [de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.doAnnotate]), we need
- * to replicate the same parent-directory structure of the original file for the temp-file.
+ * to replicate the same (parent-)directory structure of the original file for the temp-file.
  *
- * Additionally, we have to make sure that any adjacent content-folders ("roles", etc.) are resolvable
+ * Additionally, we have to make sure that any specific content-folders ("roles", etc.) are resolvable
  * when linting the temporary file.
- * For this we simply create symlinks to the original folder(s).
+ * The same goes for static YAML-resources (pulled by 'ansible-lint' via 'import_playbook', 'import_tasks', etc.).
+ *
+ * For this we simply create symlinks to the original files/folders.
  */
 class AnsibleLintTempEnv(
     projectBasePath: String,
@@ -43,33 +45,36 @@ class AnsibleLintTempEnv(
         file.createNewFile()
         file.writeText(fileContent)
 
-        symlinks = createSymlinksToSpecificAnsibleFolders(projectBasePath, directory.path)
+        symlinks = createSymlinks(projectBasePath, directory.absolutePath, file.absolutePath)
     }
 
-    private fun createSymlinksToSpecificAnsibleFolders(
+    private fun createSymlinks(
         projectBasePath: String,
-        symlinkBasePath: String
+        symlinkBasePath: String,
+        lintedFilePath: String
     ): List<Path> {
         val symlinks = mutableListOf<Path>()
 
         File(projectBasePath).walkTopDown().forEach {
-            if (it.isDirectory) {
-                if (specificFolders.contains(it.name)) {
-                    val symlinkPath = "${symlinkBasePath}${it.path.removePrefix(projectBasePath)}"
+            if (it.absolutePath == lintedFilePath) return@forEach
 
-                    // create intermediate dirs for symlink
-                    File(symlinkPath.split(File.separator).dropLast(1).joinToString(File.separator)).mkdirs()
+            if ((it.isDirectory && specialFolders.contains(it.name)) ||
+                (it.isFile && yamlFileExtensions.contains(it.extension.lowercase()))) {
 
-                    try {
-                        symlinks.add(
-                            Files.createSymbolicLink(
-                                Paths.get(symlinkPath),
-                                it.toPath()
-                            )
+                val symlinkPath = "${symlinkBasePath}${it.absolutePath.removePrefix(projectBasePath)}"
+
+                // create intermediate dirs for symlink
+                File(symlinkPath.split(File.separator).dropLast(1).joinToString(File.separator)).mkdirs()
+
+                try {
+                    symlinks.add(
+                        Files.createSymbolicLink(
+                            Paths.get(symlinkPath),
+                            it.toPath()
                         )
-                    } catch (_: Exception) {
-                        // silently ignore exceptions
-                    }
+                    )
+                } catch (_: Exception) {
+                    // silently ignore exceptions
                 }
             }
         }
@@ -93,10 +98,15 @@ class AnsibleLintTempEnv(
     }
 
     companion object {
-        private val specificFolders = listOf(
+        private val specialFolders = listOf(
             "roles",
             "library",
             "filter_plugins"
+        )
+
+        private val yamlFileExtensions = listOf(
+            "yml",
+            "yaml"
         )
     }
 }

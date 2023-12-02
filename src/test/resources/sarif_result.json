@@ -6,7 +6,7 @@
             "tool": {
                 "driver": {
                     "name": "ansible-lint",
-                    "version": "6.21.0",
+                    "version": "6.22.1",
                     "informationUri": "https://github.com/ansible/ansible-lint",
                     "rules": [
                         {

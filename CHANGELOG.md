@@ -1,3 +1,12 @@
+## [1.5.7]
+
+### Fixed
+- the import of static resources (via "import_playbook", "import_tasks", etc.) doesn't show a "file not found"-error anymore
+
+### Changed
+- dependency updates
+- Gradle-wrapper update
+
 ## [1.5.6]
 
 ### Fixed
