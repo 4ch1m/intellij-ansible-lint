@@ -93,7 +93,7 @@ Pipx can be used as an alternative to manually configuring a venv. It has the ad
   sudo apt remove ansible*
   ```
 
-* Install [Pipx](https://pipx.pypa.io/stable/installation/)
+* Install [Pipx](https://pipx.pypa.io/stable/)
   
 * Install ansible with pipx (change 6.7.0 to your required version, or remove it to install the latest)
   ```
