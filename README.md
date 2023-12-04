@@ -81,6 +81,8 @@ If your package manager doesn't provide `ansible-lint` or you want to install a 
 
 Reference this script in the plugin; and you should be ready to go. 👍
 
+(Using [pipx](https://github.com/pypa/pipx) to install specific versions of `ansible` and `ansible-lint` is also a valid alternative; reportedly working fine.)
+
 ## Installation
 
 Use the IDE's built-in plugin system:
