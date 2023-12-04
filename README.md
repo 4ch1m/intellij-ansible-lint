@@ -48,8 +48,11 @@ Alternative installation methods (like [Poetry](https://python-poetry.org/), [Ho
 
 `ansible-lint` needs to be runnable directly from your computer's command line.
 
-If your package manager doesn't provide `ansible-lint` or you want to install a more up-to-date version, then a suggested setup would be as follows:
+If your package manager doesn't provide `ansible-lint` or you want to install a more up-to-date version, then a suggested setup would be as follows: 
 
+_NOTE_ 
+
+This will result in ansbile-lint using the latest version of ansible supported by ansible-lint. If you need a specific version of ansible see [Pipx](#pipx) instructions below
 * create an `ansible-lint` folder in your home directory:
   ```
   mkdir ~/ansible-lint
@@ -80,6 +83,29 @@ If your package manager doesn't provide `ansible-lint` or you want to install a 
   ```
 
 Reference this script in the plugin; and you should be ready to go. 👍
+
+## Pipx
+
+Pipx can be used as an alternative to manually configuring a venv. It has the advantage of automatically adding the installed binaries to your path and allows specifying the ansible verion ansible-lint uses
+
+* Remove apt installed ansible
+  ```
+  sudo apt remove ansible*
+  ```
+
+* Install [Pipx](https://pipx.pypa.io/stable/installation/)
+  
+* Install ansible with pipx (change 6.7.0 to your required version, or remove it to install the latest)
+  ```
+  pipx install --include-deps ansible==6.7.0
+  ```
+
+* Inject ansible-lint into the pipx ansible venv 
+  ```
+  pipx inject --include-deps ansible ansible-lint
+  ```
+
+`ansible` and `ansible-lint` should now be availible in your path
 
 ## Installation
 
