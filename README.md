@@ -48,7 +48,7 @@ Alternative installation methods (like [Poetry](https://python-poetry.org/), [Ho
 
 `ansible-lint` needs to be runnable directly from your computer's command line.
 
-If your package manager doesn't provide `ansible-lint` or you want to install a more up-to-date version, then a suggested setup would be as follows: 
+If your package manager doesn't provide `ansible-lint` or you want to install a more up-to-date version, then a suggested setup would be as follows:
 
 _NOTE_ 
 
