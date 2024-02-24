@@ -6,7 +6,7 @@
             "tool": {
                 "driver": {
                     "name": "ansible-lint",
-                    "version": "6.22.1",
+                    "version": "24.2.0",
                     "informationUri": "https://github.com/ansible/ansible-lint",
                     "rules": [
                         {
@@ -21,7 +21,7 @@
                             "help": {
                                 "text": "All tasks and plays should have a distinct name for readability and for ``--start-at-task`` to work"
                             },
-                            "helpUri": "https://ansible-lint.readthedocs.io/rules/name/",
+                            "helpUri": "https://ansible.readthedocs.io/projects/lint/rules/name/",
                             "properties": {
                                 "tags": [
                                     "idiom"
@@ -40,7 +40,7 @@
                             "help": {
                                 "text": "Check whether actions are using using full qualified collection names."
                             },
-                            "helpUri": "https://ansible-lint.readthedocs.io/rules/fqcn/",
+                            "helpUri": "https://ansible.readthedocs.io/projects/lint/rules/fqcn/",
                             "properties": {
                                 "tags": [
                                     "formatting"
@@ -59,7 +59,7 @@
                             "help": {
                                 "text": "Missing or unsupported mode parameter can cause unexpected file permissions based on version of Ansible being used. Be explicit, like `mode: 0644` to avoid hitting this rule. Special `preserve` value is accepted only by `copy`, `template` modules."
                             },
-                            "helpUri": "https://ansible-lint.readthedocs.io/rules/risky-file-permissions/",
+                            "helpUri": "https://ansible.readthedocs.io/projects/lint/rules/risky-file-permissions/",
                             "properties": {
                                 "tags": [
                                     "unpredictability"
@@ -78,7 +78,7 @@
                             "help": {
                                 "text": ""
                             },
-                            "helpUri": "https://ansible-lint.readthedocs.io/rules/jinja/",
+                            "helpUri": "https://ansible.readthedocs.io/projects/lint/rules/jinja/",
                             "properties": {
                                 "tags": [
                                     "formatting"
@@ -97,7 +97,7 @@
                             "help": {
                                 "text": ""
                             },
-                            "helpUri": "https://ansible-lint.readthedocs.io/rules/yaml/",
+                            "helpUri": "https://ansible.readthedocs.io/projects/lint/rules/yaml/",
                             "properties": {
                                 "tags": [
                                     "formatting",

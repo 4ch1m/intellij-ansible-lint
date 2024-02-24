@@ -1,3 +1,10 @@
+## [1.5.8]
+
+### Changed
+- updated test-resources
+- dependency updates
+- Gradle-wrapper update
+
 ## [1.5.7]
 
 ### Fixed
