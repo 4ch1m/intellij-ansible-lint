@@ -43,10 +43,14 @@ class AnsibleLintCommandFileIgnore(project: Project) : AnsibleLintCommandFile(
             val trimmedLine = it.trim()
 
             if (trimmedLine != "" && !trimmedLine.startsWith("#")) {
-                val (path, rule) = trimmedLine.split("#").first().trim().split(" ")
-                val rules = ignores[path] ?: mutableSetOf()
-                rules.add(rule)
-                ignores[path] = rules
+                val splitLine = trimmedLine.split("#").first().trim().split(" ")
+
+                if (splitLine.size == 2) {
+                    val (path, rule) = splitLine
+                    val rules = ignores[path] ?: mutableSetOf()
+                    rules.add(rule)
+                    ignores[path] = rules
+                }
             }
         }
 

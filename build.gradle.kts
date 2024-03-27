@@ -7,10 +7,10 @@ description = properties("pluginDescription")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "1.9.22"
+    id("org.jetbrains.kotlin.jvm") version "1.9.23"
     id("org.jetbrains.intellij") version "1.17.2"
     id("org.jetbrains.changelog") version "2.2.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
     id("org.jsonschema2pojo") version "1.2.1"
     id("com.github.ben-manes.versions") version "0.51.0"
 }
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.charleskorn.kaml:kaml-jvm:0.57.0")
+    implementation("com.charleskorn.kaml:kaml-jvm:0.58.0")
     implementation("io.github.z4kn4fein:semver-jvm:1.4.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")

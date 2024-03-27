@@ -112,6 +112,7 @@ class AnsibleLintCommandFileIgnoreTest {
             tasks/main.yml yaml[braces]
 
             tasks/test.yml name[casing]  #    comment
+            tasks/test.yml # missing rule
             roles/test/tasks/main.yml name[casing]
         """.trimIndent())
 

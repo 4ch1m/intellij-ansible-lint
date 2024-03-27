@@ -1,3 +1,15 @@
+## [1.6.0]
+
+### Added
+- "Got it" tooltip for status bar item
+
+### Changed
+- dependency updates
+- Gradle-wrapper update
+
+### Fixed
+- more resilient parsing of `.ansible-lint-ignore` files
+
 ## [1.5.8]
 
 ### Changed
