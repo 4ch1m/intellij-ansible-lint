@@ -1,5 +1,6 @@
 package de.achimonline.ansible_lint.annotator
 
+import com.intellij.codeInsight.intention.IntentionAction
 import com.intellij.lang.annotation.AnnotationBuilder
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.HighlightSeverity
@@ -117,7 +118,7 @@ class AnsibleLintAnnotatorTest {
 
         whenever(annotationHolder.newAnnotation(any(), any())).doReturn(annotationBuilder)
         whenever(annotationBuilder.range(any(TextRange::class.java))).doReturn(annotationBuilder)
-        whenever(annotationBuilder.withFix(any())).doReturn(annotationBuilder)
+        whenever(annotationBuilder.withFix(any(IntentionAction::class.java))).doReturn(annotationBuilder)
 
         ansibleLintAnnotator.apply(psiFile, applicableInformation, annotationHolder)
 
@@ -157,7 +158,7 @@ class AnsibleLintAnnotatorTest {
         verify(
             annotationBuilder,
             times(lintItems.size * possibleFixOptions.size - ignoredItems)
-        ).withFix(any())
+        ).withFix(any(IntentionAction::class.java))
     }
 
     @Test
@@ -173,7 +174,7 @@ class AnsibleLintAnnotatorTest {
 
         whenever(annotationHolder.newAnnotation(any(), any())).doReturn(annotationBuilder)
         whenever(annotationBuilder.range(any(TextRange::class.java))).doReturn(annotationBuilder)
-        whenever(annotationBuilder.withFix(any())).doReturn(annotationBuilder)
+        whenever(annotationBuilder.withFix(any(IntentionAction::class.java))).doReturn(annotationBuilder)
 
         ansibleLintAnnotator.apply(
             psiFile,

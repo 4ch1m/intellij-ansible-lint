@@ -2,7 +2,6 @@ package de.achimonline.ansible_lint.common
 
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
-import com.intellij.util.io.createFile
 import com.intellij.util.io.delete
 import org.junit.After
 import org.junit.Before
@@ -14,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.io.path.createTempDirectory
@@ -69,7 +69,7 @@ class AnsibleLintTempEnvTest {
                 File(path.split(File.separator).dropLast(1).joinToString(File.separator)).mkdirs()
             }
 
-            Paths.get("${tempDir.pathString}${File.separator}${path}").createFile()
+            Files.createFile(Paths.get("${tempDir.pathString}${File.separator}${path}"))
         }
 
         val filePath = "${tempDir.pathString}${File.separator}${intermediateDir}${File.separator}${fileName}"

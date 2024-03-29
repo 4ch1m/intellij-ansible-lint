@@ -1,6 +1,7 @@
 package de.achimonline.ansible_lint.statusbar
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.application.invokeLater
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
@@ -25,10 +26,13 @@ class AnsibleLintStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun createWidget(project: Project): StatusBarWidget {
         val ansibleLintStatusBarPopup = AnsibleLintStatusBarPopup(project)
 
-        try {
-            val gotItTooltip = createGotItTooltip()
-            gotItTooltip.show(ansibleLintStatusBarPopup.component, GotItTooltip.TOP_MIDDLE)
-        } catch (_: Exception) {}
+        val gotItTooltip = createGotItTooltip()
+
+        if (gotItTooltip.canShow()) {
+            invokeLater {
+                gotItTooltip.show(ansibleLintStatusBarPopup.component, GotItTooltip.TOP_MIDDLE)
+            }
+        }
 
         return ansibleLintStatusBarPopup
     }

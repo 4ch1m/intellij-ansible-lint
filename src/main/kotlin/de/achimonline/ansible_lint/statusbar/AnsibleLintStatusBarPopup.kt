@@ -47,13 +47,12 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
     override fun getWidgetState(file: VirtualFile?): WidgetState {
         val settingsState = ApplicationManager.getApplication().getService(AnsibleLintSettingsState::class.java)
 
-        if (!isYamlFile(file) ||
-            !settingsState.settings.onlyRunWhenConfigFilePresent ||
-            AnsibleLintCommandFileConfig(project).locate() != null) {
-            return WidgetState.HIDDEN
+        return if (!isYamlFile(file) ||
+                   !settingsState.settings.onlyRunWhenConfigFilePresent ||
+                   AnsibleLintCommandFileConfig(project).locate() != null) {
+            WidgetState.HIDDEN
         } else {
-            @Suppress("DialogTitleCapitalization")
-            return WidgetState(
+            WidgetState(
                 message("statusbar.widget.tooltip"),
                 message("statusbar.widget.text"),
                 true
@@ -61,12 +60,12 @@ class AnsibleLintStatusBarPopup(project: Project) : EditorBasedStatusBarPopup(pr
         }
     }
 
-    override fun createPopup(context: DataContext?): ListPopup {
+    override fun createPopup(context: DataContext): ListPopup {
         @Suppress("DialogTitleCapitalization")
         return JBPopupFactory.getInstance().createActionGroupPopup(
             message("statusbar.popup.title"),
             actionGroup,
-            context!!,
+            context,
             JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
             false
         )

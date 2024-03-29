@@ -1,3 +1,12 @@
+## [1.6.2]
+
+### Fixed
+- "Got it" tooltip creation... again ;-)
+
+### Changed
+- raised minimum platform target version (`2023.1`)
+- minor code changes (resolved usage of deprecated methods)
+
 ## [1.6.1]
 
 ### Fixed
