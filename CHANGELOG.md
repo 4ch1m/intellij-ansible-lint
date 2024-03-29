@@ -1,3 +1,8 @@
+## [1.6.1]
+
+### Fixed
+- "Got it" tooltip creation
+
 ## [1.6.0]
 
 ### Added

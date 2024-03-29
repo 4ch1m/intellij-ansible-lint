@@ -25,8 +25,10 @@ class AnsibleLintStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun createWidget(project: Project): StatusBarWidget {
         val ansibleLintStatusBarPopup = AnsibleLintStatusBarPopup(project)
 
-        val gotItTooltip = createGotItTooltip()
-        gotItTooltip.show(ansibleLintStatusBarPopup.component, GotItTooltip.TOP_MIDDLE)
+        try {
+            val gotItTooltip = createGotItTooltip()
+            gotItTooltip.show(ansibleLintStatusBarPopup.component, GotItTooltip.TOP_MIDDLE)
+        } catch (_: Exception) {}
 
         return ansibleLintStatusBarPopup
     }
