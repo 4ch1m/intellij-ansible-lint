@@ -80,6 +80,11 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                         )
                         .bindSelected(settings::visualizeIgnoredRules)
                 }
+                row {
+                    checkBox(message("settings.group.integration.lint-excluded-paths"))
+                        .comment(message("settings.group.integration.lint-excluded-paths.comment"))
+                        .bindSelected(settings::lintFilesInsideExcludedPaths)
+                }
             }
             group {
                 row {

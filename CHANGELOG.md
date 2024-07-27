@@ -1,3 +1,13 @@
+## [1.7.0]
+
+### Added
+- evaluation/handling of `exclude_paths` in Ansible Lint configuration file
+- new setting: lint files, even if they're within `exclude_paths` 
+
+### Changed
+- dependency updates
+- Gradle-wrapper update
+
 ## [1.6.2]
 
 ### Fixed

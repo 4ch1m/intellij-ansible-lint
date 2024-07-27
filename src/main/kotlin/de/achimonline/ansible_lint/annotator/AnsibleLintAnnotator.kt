@@ -30,6 +30,7 @@ import de.achimonline.ansible_lint.settings.AnsibleLintConfigurable
 import de.achimonline.ansible_lint.settings.AnsibleLintSettings
 import de.achimonline.ansible_lint.settings.AnsibleLintSettingsState
 import java.io.File
+import java.nio.file.Paths
 import java.util.concurrent.ExecutionException
 import kotlin.io.path.pathString
 
@@ -59,6 +60,14 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
         val relativeFilePath =
             collectedInformation.file.virtualFile.toNioPath().pathString.removePrefix(projectBasePath)
                 .removePrefix(File.separator)
+
+        if (!settingsState.settings.lintFilesInsideExcludedPaths) {
+            val excludePaths = AnsibleLintCommandFileConfig(project).getExcludePaths()
+            if (excludePaths.contains(Paths.get(relativeFilePath).parent.pathString)) {
+                return ApplicableInformation()
+            }
+        }
+
         val ignores = AnsibleLintCommandFileIgnore(project).parse()
 
         /**

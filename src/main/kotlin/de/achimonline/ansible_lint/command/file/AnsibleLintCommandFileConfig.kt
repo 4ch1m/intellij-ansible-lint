@@ -77,4 +77,22 @@ class AnsibleLintCommandFileConfig(project: Project) : AnsibleLintCommandFile(
             )
         }
     }
+
+    fun getExcludePaths(): Set<String> {
+        val configFile = locate()
+
+        if (configFile != null) {
+            val configText = configFile.readText()
+            val configYamlNode = Yaml.default.parseToYamlNode(configText)
+            val excludePaths = configYamlNode.yamlMap.get<YamlList>("exclude_paths")
+
+            if (excludePaths != null && excludePaths.items.isNotEmpty()) {
+                return excludePaths.items.map {
+                    it.contentToString().removeSurrounding("'").trim().removeSuffix("/").removeSuffix("\\")
+                }.toSet()
+            }
+        }
+
+        return emptySet()
+    }
 }

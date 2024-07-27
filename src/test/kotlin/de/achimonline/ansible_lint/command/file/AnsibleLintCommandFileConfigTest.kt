@@ -166,4 +166,39 @@ class AnsibleLintCommandFileConfigTest {
             
         """.trimIndent(), configFile.readText())
     }
+
+    @Test
+    fun getExcludePaths() {
+        configFile.writeText("""
+            ---
+            # .ansible-lint
+            
+            profile: null # min, basic, moderate,safety, shared, production
+            
+            exclude_paths:
+              - test/dir1
+              - /test/dir2
+              - test/dir3/
+              - /test/dir4/
+              -   test/dir5
+
+            # Offline mode disables installation of requirements.yml and schema refreshing
+            offline: true
+            
+        """.trimIndent())
+
+        val excludePaths = AnsibleLintCommandFileConfig(project).getExcludePaths()
+
+        assertEquals(5, excludePaths.size)
+
+        listOf(
+            "test/dir1",
+            "/test/dir2",
+            "test/dir3",
+            "/test/dir4",
+            "test/dir5"
+        ).forEach {
+            assertTrue(excludePaths.contains(it))
+        }
+    }
 }

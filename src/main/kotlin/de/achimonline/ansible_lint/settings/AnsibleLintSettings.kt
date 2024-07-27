@@ -4,5 +4,6 @@ data class AnsibleLintSettings(
     var executable: String = "ansible-lint",
     var offline: Boolean = false,
     var onlyRunWhenConfigFilePresent: Boolean = true,
-    var visualizeIgnoredRules: Boolean = true
+    var visualizeIgnoredRules: Boolean = true,
+    var lintFilesInsideExcludedPaths: Boolean = false
 )

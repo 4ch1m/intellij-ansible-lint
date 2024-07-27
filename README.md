@@ -79,7 +79,7 @@ If your package manager doesn't provide `ansible-lint` or you want to install a 
   chmod +x ~/ansible-lint/run.sh
   ```
 
-Reference this script in the plugin; and you should be ready to go. 👍
+Reference this script in the plugin; and you should be ready to go. :thumbsup:
 
 (Using [pipx](https://github.com/pypa/pipx) to install specific versions of `ansible` and `ansible-lint` is also a valid alternative; reportedly working fine.)
 
