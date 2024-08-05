@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation("com.charleskorn.kaml:kaml-jvm:0.60.0")
+    implementation("com.charleskorn.kaml:kaml-jvm:0.61.0")
     implementation("io.github.z4kn4fein:semver-jvm:2.0.0")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
@@ -89,6 +89,17 @@ tasks {
                 Changelog.OutputType.HTML
             )
         })
+    }
+
+    signPlugin {
+        if (listOf(
+                "JB_PLUGIN_SIGN_CERTIFICATE_CHAIN",
+                "JB_PLUGIN_SIGN_PRIVATE_KEY",
+                "JB_PLUGIN_SIGN_PRIVATE_KEY_PASSWORD").all { System.getenv(it) != null }) {
+            certificateChainFile.set(file(System.getenv("JB_PLUGIN_SIGN_CERTIFICATE_CHAIN")))
+            privateKeyFile.set(file(System.getenv("JB_PLUGIN_SIGN_PRIVATE_KEY")))
+            password.set(File(System.getenv("JB_PLUGIN_SIGN_PRIVATE_KEY_PASSWORD")).readText())
+        }
     }
 
     publishPlugin {

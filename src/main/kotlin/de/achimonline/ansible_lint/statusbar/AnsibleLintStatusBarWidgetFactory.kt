@@ -8,7 +8,7 @@ import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.StatusBarWidgetFactory
 import com.intellij.ui.GotItTooltip
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
-import java.net.URL
+import java.net.URI
 
 class AnsibleLintStatusBarWidgetFactory : StatusBarWidgetFactory {
     override fun getId(): String {
@@ -52,7 +52,7 @@ class AnsibleLintStatusBarWidgetFactory : StatusBarWidgetFactory {
             .withIcon(AllIcons.General.Information)
             .withBrowserLink(
                 message("gotitpopup.statusbar.browserlink"),
-                URL("https://github.com/4ch1m/intellij-ansible-lint#setup")
+                URI.create("https://github.com/4ch1m/intellij-ansible-lint#setup").toURL()
             )
     }
 }

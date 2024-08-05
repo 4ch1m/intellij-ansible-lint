@@ -1,3 +1,12 @@
+## [1.7.1]
+
+### Fixed
+- `exclude_paths` now properly working on subdirectories
+
+### Changed
+- dependency updates
+- minor code/asset improvements
+
 ## [1.7.0]
 
 ### Added

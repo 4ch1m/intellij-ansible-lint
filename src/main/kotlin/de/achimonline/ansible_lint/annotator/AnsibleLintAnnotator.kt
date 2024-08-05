@@ -62,8 +62,9 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
                 .removePrefix(File.separator)
 
         if (!settingsState.settings.lintFilesInsideExcludedPaths) {
-            val excludePaths = AnsibleLintCommandFileConfig(project).getExcludePaths()
-            if (excludePaths.contains(Paths.get(relativeFilePath).parent.pathString)) {
+            val relativeDirectoryPath = Paths.get(relativeFilePath).parent.pathString
+
+            if (AnsibleLintCommandFileConfig(project).getExcludePaths().any { relativeDirectoryPath.startsWith(it) }) {
                 return ApplicableInformation()
             }
         }
