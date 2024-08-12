@@ -3,14 +3,14 @@ package de.achimonline.ansible_lint.command.file
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
+import io.mockk.every
+import io.mockk.mockkStatic
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.mockStatic
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
@@ -38,9 +38,12 @@ class AnsibleLintCommandFileConfigTest {
 
         configFile = File("${projectDir}${File.separator}${AnsibleLintCommandFileConfig.DEFAULT}")
 
-        mockStatic(ProjectRootManager::class.java, Mockito.CALLS_REAL_METHODS).use { mockedProjectRootManager ->
-            mockedProjectRootManager.`when`<Any> { ProjectRootManager.getInstance(project) }.doReturn(projectRootManager)
-        }
+// NOTE: Mockito's "mockStatic" doesn't work anymore after upgrading from 4.x to 5.x; using MockK instead
+//        mockStatic(ProjectRootManager::class.java, Mockito.CALLS_REAL_METHODS).use { mockedProjectRootManager ->
+//            mockedProjectRootManager.`when`<Any> { ProjectRootManager.getInstance(project) }.doReturn(projectRootManager)
+//        }
+        mockkStatic(ProjectRootManager::class)
+        every { ProjectRootManager.getInstance(project) } returns projectRootManager
 
         whenever(projectRootManager.contentRoots).doReturn(arrayOf(contentRoot))
         whenever(contentRoot.children).doReturn(emptyArray())

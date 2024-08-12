@@ -9,21 +9,20 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiFile
-import de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.*
+import de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.ApplicableInformation
 import de.achimonline.ansible_lint.annotator.actions.*
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.parser.AnsibleLintItem
 import de.achimonline.ansible_lint.settings.AnsibleLintSettings
-import org.junit.Test
-
-import org.junit.Assert.*
+import io.mockk.every
+import io.mockk.mockkStatic
+import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.mockStatic
 import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.*
 import java.util.*
@@ -76,9 +75,12 @@ class AnsibleLintAnnotatorTest {
     fun setUp() {
         whenever(psiFile.project).doReturn(project)
 
-        mockStatic(PsiDocumentManager::class.java, Mockito.CALLS_REAL_METHODS).use { mockedPsiDocumentManager ->
-            mockedPsiDocumentManager.`when`<Any> { PsiDocumentManager.getInstance(project) }.doReturn(psiDocumentManager)
-        }
+// NOTE: Mockito's "mockStatic" doesn't work anymore after upgrading from 4.x to 5.x; using MockK instead
+//        mockStatic(PsiDocumentManager::class.java, Mockito.CALLS_REAL_METHODS).use { mockedPsiDocumentManager ->
+//            mockedPsiDocumentManager.`when`<Any> { PsiDocumentManager.getInstance(project) }.doReturn(psiDocumentManager)
+//        }
+        mockkStatic(PsiDocumentManager::class)
+        every { PsiDocumentManager.getInstance(project) } returns psiDocumentManager
 
         whenever(psiDocumentManager.getDocument(psiFile)).doReturn(document)
 

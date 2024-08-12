@@ -1,6 +1,7 @@
 package de.achimonline.ansible_lint.annotator.actions
 
-import org.junit.Assert.*
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class AnsibleLintAnnotatorNoQAActionTest {

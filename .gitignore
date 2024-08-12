@@ -1,7 +1,9 @@
-.idea
-.gradle
-.run
-build
-assets
-src/generated/java/de
-tools/output
+.idea/
+.gradle/
+.kotlin/
+.intellijPlatform/
+.run/
+build/
+assets/
+src/generated/
+tools/output/

@@ -1,29 +1,53 @@
 import org.jetbrains.changelog.Changelog
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
-fun properties(key: String) = project.findProperty(key).toString()
+fun property(key: String) = providers.gradleProperty(key).get()
+fun env(key: String) = providers.environmentVariable(key).get()
 
-version = properties("pluginVersion")
-description = properties("pluginDescription")
+group = property("pluginGroup")
+version = property("pluginVersion")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.0.0"
-    id("org.jetbrains.intellij") version "1.17.4"
+    id("org.jetbrains.kotlin.jvm") version "2.0.10"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
     id("org.jetbrains.changelog") version "2.2.1"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.10"
     id("org.jsonschema2pojo") version "1.2.1"
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
 repositories {
     mavenCentral()
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 dependencies {
+    intellijPlatform {
+        create(
+            providers.gradleProperty("platformType"),
+            providers.gradleProperty("platformVersion")
+        )
+
+        instrumentationTools()
+        pluginVerifier()
+        zipSigner()
+        testFramework(TestFrameworkType.Platform)
+    }
+
     implementation("com.charleskorn.kaml:kaml-jvm:0.61.0")
     implementation("io.github.z4kn4fein:semver-jvm:2.0.0")
+
+    testImplementation(kotlin("test"))
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
+    testImplementation("io.mockk:mockk:1.13.12")
+
+    testRuntimeOnly("junit:junit:4.13.2") // see: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-faq.html#junit5-test-framework-refers-to-junit4
 }
 
 sourceSets {
@@ -33,14 +57,50 @@ sourceSets {
     }
 }
 
-intellij {
-    pluginName.set(properties("pluginName"))
-    version.set(properties("platformVersion"))
-    updateSinceUntilBuild.set(false)
+intellijPlatform {
+    pluginConfiguration {
+        name = property("pluginName")
+        version = property("pluginVersion")
+        description = property("pluginDescription")
+        changeNotes = provider {
+            changelog.renderItem(
+                changelog.getLatest(),
+                Changelog.OutputType.HTML
+            )
+        }
+
+        ideaVersion {
+            sinceBuild = property("pluginSinceBuild")
+            untilBuild = provider { null }
+        }
+    }
+
+    signing {
+        if (listOf(
+                "JB_PLUGIN_SIGN_CERTIFICATE_CHAIN",
+                "JB_PLUGIN_SIGN_PRIVATE_KEY",
+                "JB_PLUGIN_SIGN_PRIVATE_KEY_PASSWORD").all { System.getenv(it) != null }) {
+            certificateChainFile = file(env("JB_PLUGIN_SIGN_CERTIFICATE_CHAIN"))
+            privateKeyFile = file(env("JB_PLUGIN_SIGN_PRIVATE_KEY"))
+            password = file(env("JB_PLUGIN_SIGN_PRIVATE_KEY_PASSWORD")).readText()
+        }
+    }
+
+    publishing {
+        if (System.getenv("JB_PLUGIN_PUBLISH_TOKEN") != null) {
+            token = file(env("JB_PLUGIN_PUBLISH_TOKEN")).readText().trim()
+        }
+    }
+
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
 }
 
 changelog {
-    version.set(properties("pluginVersion"))
+    version = property("pluginVersion")
 }
 
 jsonSchema2Pojo {
@@ -54,11 +114,11 @@ jsonSchema2Pojo {
 }
 
 kotlin {
-    jvmToolchain(properties("kotlinJvmTarget").toInt())
+    jvmToolchain(property("kotlinJvmTarget").toInt())
 }
 
 tasks {
-    properties("javaVersion").let {
+    property("javaVersion").let {
         withType<JavaCompile> {
             sourceCompatibility = it
             targetCompatibility = it
@@ -76,35 +136,6 @@ tasks {
                 ||
                 "^[0-9,.v-]+(-r)?$".toRegex().matches(candidate.version)
             ).not()
-        }
-    }
-
-    patchPluginXml {
-        pluginDescription.set(properties("pluginDescription"))
-        version.set(properties("pluginVersion"))
-        sinceBuild.set(properties("pluginSinceBuild"))
-        changeNotes.set(provider {
-            changelog.renderItem(
-                changelog.getLatest(),
-                Changelog.OutputType.HTML
-            )
-        })
-    }
-
-    signPlugin {
-        if (listOf(
-                "JB_PLUGIN_SIGN_CERTIFICATE_CHAIN",
-                "JB_PLUGIN_SIGN_PRIVATE_KEY",
-                "JB_PLUGIN_SIGN_PRIVATE_KEY_PASSWORD").all { System.getenv(it) != null }) {
-            certificateChainFile.set(file(System.getenv("JB_PLUGIN_SIGN_CERTIFICATE_CHAIN")))
-            privateKeyFile.set(file(System.getenv("JB_PLUGIN_SIGN_PRIVATE_KEY")))
-            password.set(File(System.getenv("JB_PLUGIN_SIGN_PRIVATE_KEY_PASSWORD")).readText())
-        }
-    }
-
-    publishPlugin {
-        if (project.hasProperty("JB_PLUGIN_PUBLISH_TOKEN")) {
-            token.set(project.property("JB_PLUGIN_PUBLISH_TOKEN").toString())
         }
     }
 }

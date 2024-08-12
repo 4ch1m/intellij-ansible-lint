@@ -1,3 +1,12 @@
+## [1.8.0]
+
+### Changed
+- required IDE version >= `2024.2`
+- major "Gradle IntelliJ Plugin" update (`1.17.4` to `2.0.1`)
+- Gradle-wrapper update
+- other dependency updates
+- various minor code and asset improvements
+
 ## [1.7.1]
 
 ### Fixed

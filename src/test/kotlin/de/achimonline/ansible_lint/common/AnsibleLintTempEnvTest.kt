@@ -6,7 +6,8 @@ import com.intellij.util.io.delete
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
@@ -66,7 +67,7 @@ class AnsibleLintTempEnvTest {
             val (path, _) = it
 
             if (path.contains(File.separator)) {
-                File(path.split(File.separator).dropLast(1).joinToString(File.separator)).mkdirs()
+                File("${tempDir.pathString}${File.separator}${path.split(File.separator).dropLast(1).joinToString(File.separator)}").mkdirs()
             }
 
             Files.createFile(Paths.get("${tempDir.pathString}${File.separator}${path}"))

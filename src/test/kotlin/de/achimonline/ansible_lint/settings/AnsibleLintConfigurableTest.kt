@@ -1,9 +1,8 @@
 package de.achimonline.ansible_lint.settings
 
 import com.intellij.icons.AllIcons
+import org.junit.Assert.assertNotNull
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class AnsibleLintConfigurableTest {
     @Test
