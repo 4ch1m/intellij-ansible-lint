@@ -1,3 +1,12 @@
+## [1.8.1]
+
+### Fixed
+- bug regarding path-handling in annotator
+
+### Changed
+- improved temp-file/-dir creation
+- Gradle-wrapper update
+
 ## [1.8.0]
 
 ### Changed

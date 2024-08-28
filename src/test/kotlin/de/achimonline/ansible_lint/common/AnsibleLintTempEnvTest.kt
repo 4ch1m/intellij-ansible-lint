@@ -3,6 +3,7 @@ package de.achimonline.ansible_lint.common
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.util.io.delete
+import de.achimonline.ansible_lint.common.AnsibleLintHelper.Companion.createTempDirectory
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +18,6 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.createTempDirectory
 import kotlin.io.path.pathString
 
 @RunWith(MockitoJUnitRunner::class)

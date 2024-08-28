@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
+import de.achimonline.ansible_lint.common.AnsibleLintHelper.Companion.createTempDirectory
 import io.mockk.every
 import io.mockk.mockkStatic
 import org.junit.Assert.assertEquals
@@ -15,7 +16,6 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.whenever
 import java.io.File
-import kotlin.io.path.createTempDirectory
 
 @RunWith(MockitoJUnitRunner::class)
 class AnsibleLintCommandFileIgnoreTest {

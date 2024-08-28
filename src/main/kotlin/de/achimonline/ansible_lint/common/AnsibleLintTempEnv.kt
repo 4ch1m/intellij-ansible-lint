@@ -1,11 +1,11 @@
 package de.achimonline.ansible_lint.common
 
 import com.intellij.psi.PsiFile
+import de.achimonline.ansible_lint.common.AnsibleLintHelper.Companion.createTempDirectory
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import kotlin.io.path.createTempDirectory
 
 /**
  * 'ansible-lint' needs full path information of the file to be linted, so it can derive

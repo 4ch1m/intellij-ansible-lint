@@ -58,15 +58,15 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
         if (settingsState.settings.onlyRunWhenConfigFilePresent && configFile == null) return ApplicableInformation()
 
         val projectBasePath = AnsibleLintHelper.getProjectBasePath(project)
-        val relativeFilePath =
-            collectedInformation.file.virtualFile.toNioPath().pathString.removePrefix(projectBasePath)
-                .removePrefix(File.separator)
+        val relativeFilePath = collectedInformation.file.virtualFile.toNioPath().pathString.removePrefix(projectBasePath).removePrefix(File.separator)
 
         if (!settingsState.settings.lintFilesInsideExcludedPaths) {
-            val relativeDirectoryPath = Paths.get(relativeFilePath).parent.pathString
+            val relativeDirectoryPath = Paths.get(relativeFilePath).parent
 
-            if (AnsibleLintCommandFileConfig(project).getExcludePaths().any { relativeDirectoryPath.startsWith(it) }) {
-                return ApplicableInformation()
+            if (relativeDirectoryPath != null) {
+                if (AnsibleLintCommandFileConfig(project).getExcludePaths().any { relativeDirectoryPath.pathString.startsWith(it) }) {
+                    return ApplicableInformation()
+                }
             }
         }
 
