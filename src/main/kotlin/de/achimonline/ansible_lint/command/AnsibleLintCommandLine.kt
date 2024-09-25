@@ -8,6 +8,17 @@ import java.nio.file.Paths
 import kotlin.io.path.pathString
 
 class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = AnsibleLintSettings()) {
+    class ProcessResult(process: Process) {
+        val stdout = process.inputStream.bufferedReader().use { it.readText() }
+        val stderr = process.errorStream.bufferedReader().use { it.readText() }
+
+        init {
+            process.waitFor()
+        }
+
+        val rc = process.exitValue()
+    }
+
     fun createVersionCheckProcess(workingDirectory: String): Process {
         return GeneralCommandLine()
             .withEnvironment(System.getenv())
@@ -68,16 +79,7 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
         val MIN_EXECUTABLE_VERSION = Version(6, 14, 3)
         val SUCCESS_RETURN_CODES = listOf(0, 2)
 
-            private val VERSIONS_REGEX = "ansible-lint (.*) using (ansible |ansible-core:)([^ ]*)".toRegex()
-
-        fun getOutput(process: Process): Pair<String, String> {
-            process.waitFor()
-
-            return Pair(
-                process.inputStream.bufferedReader().use { it.readText() },
-                process.errorStream.bufferedReader().use { it.readText() }
-            )
-        }
+        private val VERSIONS_REGEX = "ansible-lint (.*) using (ansible |ansible-core:)([^ ]*)".toRegex()
 
         fun getVersions(versionOutput: String): Pair<Version, Version>? {
             val versions = VERSIONS_REGEX.find(versionOutput)

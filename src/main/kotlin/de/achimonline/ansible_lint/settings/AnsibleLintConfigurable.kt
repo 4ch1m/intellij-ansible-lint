@@ -8,6 +8,7 @@ import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.IconLoader
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
+import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindSelected
 import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
@@ -35,7 +36,9 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
         return panel {
             group(message("settings.group.executable")) {
                 row {
-                    textField()
+                    textFieldWithBrowseButton()
+                        .resizableColumn()
+                        .align(AlignX.FILL)
                         .label(message("settings.group.executable.command"))
                         .comment(message("settings.group.executable.command.comment"))
                         .bindText(settings::executable)
@@ -103,16 +106,18 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
 
         try {
             val projectBasePath = AnsibleLintHelper.getProjectBasePath(ProjectUtil.getActiveProject()!!)
+
             val versionCheckProcess = AnsibleLintCommandLine(settings).createVersionCheckProcess(projectBasePath)
-            val versionOutput = AnsibleLintCommandLine
-                .getOutput(versionCheckProcess)
-                .first
+            val versionCheckProcessResult = AnsibleLintCommandLine.ProcessResult(versionCheckProcess)
+
+            val versionString = versionCheckProcessResult
+                .stdout
                 .split(System.lineSeparator())
                 .first()
                 .trim()
 
-            if (versionCheckProcess.exitValue() == 0 && versionOutput.contains("ansible-lint")) {
-                val versions = AnsibleLintCommandLine.getVersions(versionOutput)
+            if (versionCheckProcessResult.rc == 0 && versionString.contains("ansible-lint")) {
+                val versions = AnsibleLintCommandLine.getVersions(versionString)
 
                 if (versions != null) {
                     if (versions.first < AnsibleLintCommandLine.MIN_EXECUTABLE_VERSION) {
@@ -125,17 +130,17 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                             )
                         )
                     } else {
-                        testStatusText.text = updateTestStatus(SUCCESS, versionOutput)
+                        testStatusText.text = updateTestStatus(SUCCESS, versionString)
                     }
                 } else {
-                    logExecutableTest("Unable to parse version from: \"${versionOutput}\"")
+                    logExecutableTest("Unable to parse version from: \"${versionString}\"")
                     testStatusText.text = updateTestStatus(
                         WARNING,
                         message("settings.group.executable.test.unable-to-parse-version")
                     )
                 }
             } else {
-                logExecutableTest("Unexpected return code/result: [${versionCheckProcess.exitValue()}] - $versionOutput")
+                logExecutableTest("Unexpected return code/result: [${versionCheckProcessResult.rc}] - ${versionCheckProcessResult.stdout} | ${versionCheckProcessResult.stderr}")
                 testStatusText.text = updateTestStatus(
                     FAILURE,
                     message("settings.group.executable.test.exit-value", versionCheckProcess.exitValue())

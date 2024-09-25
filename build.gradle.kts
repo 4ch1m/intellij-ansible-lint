@@ -9,11 +9,11 @@ version = property("pluginVersion")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.0.10"
+    id("org.jetbrains.kotlin.jvm") version "2.0.20"
     id("org.jetbrains.intellij.platform") version "2.0.1"
     id("org.jetbrains.changelog") version "2.2.1"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.10"
-    id("org.jsonschema2pojo") version "1.2.1"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.0.20"
+    id("org.jsonschema2pojo") version "1.2.2"
     id("com.github.ben-manes.versions") version "0.51.0"
 }
 
@@ -43,7 +43,7 @@ dependencies {
 
     testImplementation(kotlin("test"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.1")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
     testImplementation("io.mockk:mockk:1.13.12")
 

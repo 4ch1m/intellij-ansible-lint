@@ -98,16 +98,16 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
                 yamlFilePath = tempEnv.file.path
             )
 
-            val output = AnsibleLintCommandLine.getOutput(lintProcess)
+            val lintProcessResult = AnsibleLintCommandLine.ProcessResult(lintProcess)
 
-            if (AnsibleLintCommandLine.SUCCESS_RETURN_CODES.contains(lintProcess.exitValue())) {
+            if (AnsibleLintCommandLine.SUCCESS_RETURN_CODES.contains(lintProcessResult.rc)) {
                 return ApplicableInformation(
                     settings = settingsState.settings,
-                    lintItems = AnsibleLintParser.parse(output.first),
+                    lintItems = AnsibleLintParser.parse(lintProcessResult.stdout),
                     lintIgnores = ignores[relativeFilePath]?.toSet() ?: emptySet()
                 )
             } else {
-                LOG.error("Unexpected exit code from 'ansible-lint': ${lintProcess.exitValue()}; ${output.first}|${output.second}")
+                LOG.error("Unexpected exit code from 'ansible-lint': ${lintProcessResult.rc}; ${lintProcessResult.stdout}|${lintProcessResult.stderr}")
 
                 ansibleLintNotification.notifyWarning(project, message("notifications.warning.unexpected-return-code"))
             }

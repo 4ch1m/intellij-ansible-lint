@@ -71,7 +71,7 @@ If your package manager doesn't provide `ansible-lint` or you want to install a 
   ```
   #!/bin/bash
   source ~/ansible-lint/venv/bin/activate
-  ansible-lint ${@}
+  ansible-lint "${@}"
   ```
 
 * don't forget to make it executable:
