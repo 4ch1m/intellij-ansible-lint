@@ -30,7 +30,10 @@ class AnsibleLintTempEnv(
     val symlinks: List<Path>
 
     init {
-        val relativeFilePath = fileToLint.virtualFile.path.removePrefix(projectBasePath)
+        val normalizedProjectBasePath = Paths.get(projectBasePath).normalize().toString();
+        val normalizedFileToLint = Paths.get(fileToLint.virtualFile.path).normalize().toString();
+
+        val relativeFilePath = normalizedFileToLint.removePrefix(normalizedProjectBasePath)
         val parentDirectories = relativeFilePath.split(File.separator).dropLast(1)
 
         directory = createTempDirectory().toFile()
@@ -45,7 +48,7 @@ class AnsibleLintTempEnv(
         file.createNewFile()
         file.writeText(fileContent)
 
-        symlinks = createSymlinks(projectBasePath, directory.absolutePath, file.absolutePath)
+        symlinks = createSymlinks(normalizedProjectBasePath, directory.absolutePath, file.absolutePath)
     }
 
     private fun createSymlinks(
