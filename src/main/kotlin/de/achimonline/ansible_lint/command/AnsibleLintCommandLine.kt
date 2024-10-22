@@ -1,13 +1,9 @@
 package de.achimonline.ansible_lint.command
 
-import com.intellij.execution.configurations.GeneralCommandLine
-import de.achimonline.ansible_lint.settings.AnsibleLintSettings
 import io.github.z4kn4fein.semver.Version
 import io.github.z4kn4fein.semver.VersionFormatException
-import java.nio.file.Paths
-import kotlin.io.path.pathString
 
-class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = AnsibleLintSettings()) {
+abstract class AnsibleLintCommandLine {
     class ProcessResult(process: Process) {
         val stdout = process.inputStream.bufferedReader().use { it.readText() }
         val stderr = process.errorStream.bufferedReader().use { it.readText() }
@@ -19,61 +15,14 @@ class AnsibleLintCommandLine(private val settings: AnsibleLintSettings = Ansible
         val rc = process.exitValue()
     }
 
-    fun createVersionCheckProcess(workingDirectory: String): Process {
-        return GeneralCommandLine()
-            .withEnvironment(System.getenv())
-            .withWorkDirectory(workingDirectory)
-            .withExePath(settings.executable)
-            .withParameters(
-                listOf(
-                    "--nocolor",
-                    "--version"
-                )
-            )
-            .createProcess()
-    }
+    abstract fun createVersionCheckProcess(): Process
 
-    fun createLintProcess(
+    abstract fun createLintProcess(
         workingDirectory: String,
         projectDirectory: String,
         configFile: String?,
         yamlFilePath: String
-    ): Process {
-        val parameters = mutableListOf(
-            "-q",
-            "--parseable",
-            "--format", "sarif"
-        )
-
-        if (configFile != null) {
-            parameters.addAll(
-                listOf(
-                    "--config-file", configFile
-                )
-            )
-        }
-
-        if (settings.offline) {
-            parameters.add("--offline")
-        }
-
-        parameters.addAll(
-            listOf(
-                "--project-dir",
-                /* make sure we resolve symlinks: */
-                Paths.get(projectDirectory).toRealPath().pathString
-            )
-        )
-
-        parameters.add(yamlFilePath)
-
-        return GeneralCommandLine()
-            .withEnvironment(System.getenv())
-            .withWorkDirectory(workingDirectory)
-            .withExePath(settings.executable)
-            .withParameters(parameters)
-            .createProcess()
-    }
+    ): Process
 
     companion object {
         val MIN_EXECUTABLE_VERSION = Version(6, 14, 3)

@@ -1,3 +1,11 @@
+## [1.9.0]
+
+### Added
+- WSL support (see [README](https://github.com/4ch1m/intellij-ansible-lint?tab=readme-ov-file#requirements))
+
+### Changed
+- dependency updates
+
 ## [1.8.2]
 
 ### Changed

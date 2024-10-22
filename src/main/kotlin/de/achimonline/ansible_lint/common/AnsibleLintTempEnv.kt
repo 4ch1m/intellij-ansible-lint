@@ -6,6 +6,7 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.pathString
 
 /**
  * 'ansible-lint' needs full path information of the file to be linted, so it can derive
@@ -30,7 +31,7 @@ class AnsibleLintTempEnv(
     val symlinks: List<Path>
 
     init {
-        val relativeFilePath = fileToLint.virtualFile.path.removePrefix(projectBasePath)
+        val relativeFilePath = fileToLint.virtualFile.toNioPath().pathString.removePrefix(projectBasePath)
         val parentDirectories = relativeFilePath.split(File.separator).dropLast(1)
 
         directory = createTempDirectory().toFile()

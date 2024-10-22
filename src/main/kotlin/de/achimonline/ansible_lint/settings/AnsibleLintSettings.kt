@@ -5,5 +5,6 @@ data class AnsibleLintSettings(
     var offline: Boolean = false,
     var onlyRunWhenConfigFilePresent: Boolean = true,
     var visualizeIgnoredRules: Boolean = true,
-    var lintFilesInsideExcludedPaths: Boolean = false
+    var lintFilesInsideExcludedPaths: Boolean = false,
+    var useWsl: Boolean = false
 )

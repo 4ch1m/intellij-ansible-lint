@@ -83,6 +83,17 @@ Reference this script in the plugin; and you should be ready to go. :thumbsup:
 
 (Using [pipx](https://github.com/pypa/pipx) to install specific versions of `ansible` and `ansible-lint` is also a valid alternative; reportedly working fine.)
 
+### :star2: **NEW** :star2: | Windows Subsystem for Linux (WSL)
+
+The plugin now officially supports [WSL](https://learn.microsoft.com/en-us/windows/wsl/install).  
+However, I still consider the implementation as "experimental".
+
+I tested everything myself using a standard WSL-installation on Windows11 with Ubuntu as distro.
+
+Simply install `ansible` and `ansible-lint` using the `apt` package manager; then set `ansible-lint` as command in the settings-dialog and activate the "Use WSL" checkbox.
+
+Feel free to give feedback if it works for you as well.
+
 ## Installation
 
 Use the IDE's built-in plugin system:

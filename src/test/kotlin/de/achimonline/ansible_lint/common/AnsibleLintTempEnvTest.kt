@@ -28,6 +28,9 @@ class AnsibleLintTempEnvTest {
     @Mock
     internal lateinit var editorFile: VirtualFile
 
+    @Mock
+    internal lateinit var editorFilePath: Path
+
     private lateinit var tempDir: Path
 
     @Before
@@ -79,7 +82,8 @@ class AnsibleLintTempEnvTest {
         File(filePath).writeText(fileContent)
 
         whenever(editorPsiFile.virtualFile) doReturn editorFile
-        whenever(editorFile.path) doReturn filePath
+        whenever(editorFile.toNioPath()) doReturn editorFilePath
+        whenever(editorFilePath.pathString) doReturn filePath
         whenever(editorFile.name) doReturn fileName
 
         val tempEnv = AnsibleLintTempEnv(

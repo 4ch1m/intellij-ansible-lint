@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.IconLoader
+import com.intellij.openapi.util.SystemInfo
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
 import com.intellij.ui.dsl.builder.AlignX
@@ -14,6 +15,8 @@ import com.intellij.ui.dsl.builder.bindText
 import com.intellij.ui.dsl.builder.panel
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
+import de.achimonline.ansible_lint.command.AnsibleLintCommandLineUnix
+import de.achimonline.ansible_lint.command.AnsibleLintCommandLineWSL
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileIgnore
 import de.achimonline.ansible_lint.common.AnsibleLintHelper
@@ -46,6 +49,14 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                     testButton = button(message("settings.group.executable.test")) {
                         executeTest()
                     }.component
+                }
+                row {
+                    checkBox(message("settings.group.executable.use-wsl"))
+                        .comment(message("settings.group.executable.use-wsl.comment"))
+                        .enabled(SystemInfo.isWindows)
+                        .bindSelected(settings::useWsl)
+
+                    comment("<icon src='AllIcons.General.Warning'>&nbsp;${message("settings.group.executable.use-wsl.experimental")}")
                 }
                 row {
                     testStatusText = comment("").component
@@ -92,7 +103,14 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
             group {
                 row {
                     icon(heartIcon)
-                    text(message("settings.donation", "https://paypal.me/AchimSeufert"))
+                    text(
+                        message(
+                            "settings.feedback",
+                            "https://paypal.me/AchimSeufert",
+                            "https://github.com/4ch1m/intellij-ansible-lint",
+                            "https://plugins.jetbrains.com/plugin/20905-ansible-lint"
+                        )
+                    )
                 }
             }
         }
@@ -107,7 +125,12 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
         try {
             val projectBasePath = AnsibleLintHelper.getProjectBasePath(ProjectUtil.getActiveProject()!!)
 
-            val versionCheckProcess = AnsibleLintCommandLine(settings).createVersionCheckProcess(projectBasePath)
+            val versionCheckProcess = if (settings.useWsl) {
+                AnsibleLintCommandLineWSL(settings, projectBasePath).createVersionCheckProcess()
+            } else {
+                AnsibleLintCommandLineUnix(settings).createVersionCheckProcess()
+            }
+
             val versionCheckProcessResult = AnsibleLintCommandLine.ProcessResult(versionCheckProcess)
 
             val versionString = versionCheckProcessResult

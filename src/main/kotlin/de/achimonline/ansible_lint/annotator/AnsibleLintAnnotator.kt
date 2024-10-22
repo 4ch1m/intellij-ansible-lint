@@ -20,6 +20,9 @@ import de.achimonline.ansible_lint.annotator.AnsibleLintAnnotator.CollectedInfor
 import de.achimonline.ansible_lint.annotator.actions.*
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
+import de.achimonline.ansible_lint.command.AnsibleLintCommandLineUnix
+import de.achimonline.ansible_lint.command.AnsibleLintCommandLineWSL
+import de.achimonline.ansible_lint.command.AnsibleLintCommandLineWSL.WSLPathException
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileIgnore
 import de.achimonline.ansible_lint.common.AnsibleLintHelper
@@ -91,12 +94,18 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
         )
 
         try {
-            val lintProcess = AnsibleLintCommandLine(settingsState.settings).createLintProcess(
-                workingDirectory = projectBasePath,
-                projectDirectory = tempEnv.directory.path,
-                configFile = configFile?.absolutePath,
-                yamlFilePath = tempEnv.file.path
-            )
+            val ansibleLintCommandLine: AnsibleLintCommandLine = if (settingsState.settings.useWsl) {
+                AnsibleLintCommandLineWSL(settingsState.settings, projectBasePath)
+            } else {
+                AnsibleLintCommandLineUnix(settingsState.settings)
+            }
+
+            val lintProcess = ansibleLintCommandLine.createLintProcess(
+                    workingDirectory = projectBasePath,
+                    projectDirectory = tempEnv.directory.path,
+                    configFile = configFile?.absolutePath,
+                    yamlFilePath = tempEnv.file.path
+                )
 
             val lintProcessResult = AnsibleLintCommandLine.ProcessResult(lintProcess)
 
@@ -123,6 +132,8 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
                     }
                 }
             )
+        } catch (wslPathException: WSLPathException) {
+            LOG.error("WSL Exception: ${wslPathException.message}")
         } catch (executionException: ExecutionException) {
             LOG.error("Exception while executing 'ansible-lint': ${executionException.message}")
         } catch (interruptedException: InterruptedException) {
