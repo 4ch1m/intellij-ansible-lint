@@ -95,17 +95,17 @@ class AnsibleLintAnnotator : ExternalAnnotator<CollectedInformation, ApplicableI
 
         try {
             val ansibleLintCommandLine: AnsibleLintCommandLine = if (settingsState.settings.useWsl) {
-                AnsibleLintCommandLineWSL(settingsState.settings, projectBasePath)
+                AnsibleLintCommandLineWSL(settingsState.settings)
             } else {
                 AnsibleLintCommandLineUnix(settingsState.settings)
             }
 
             val lintProcess = ansibleLintCommandLine.createLintProcess(
-                    workingDirectory = projectBasePath,
-                    projectDirectory = tempEnv.directory.path,
-                    configFile = configFile?.absolutePath,
-                    yamlFilePath = tempEnv.file.path
-                )
+                workingDirectory = projectBasePath,
+                projectDirectory = tempEnv.directory.path,
+                configFile = configFile?.absolutePath,
+                yamlFilePath = tempEnv.file.path
+            )
 
             val lintProcessResult = AnsibleLintCommandLine.ProcessResult(lintProcess)
 

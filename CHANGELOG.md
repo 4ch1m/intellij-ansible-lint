@@ -1,3 +1,10 @@
+## [1.10.0]
+
+### Changed
+- improved WSL support (WSL-distribution can now be selected in settings dialog)
+- updated test-resources
+- dependency updates
+
 ## [1.9.0]
 
 ### Added

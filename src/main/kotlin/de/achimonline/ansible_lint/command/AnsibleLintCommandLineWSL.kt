@@ -2,21 +2,38 @@ package de.achimonline.ansible_lint.command
 
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.wsl.WSLDistribution
+import com.intellij.execution.wsl.WSLDistribution.WSL_EXE
+import com.intellij.execution.wsl.WslDistributionManager
 import de.achimonline.ansible_lint.settings.AnsibleLintSettings
 import java.nio.file.Paths
 import kotlin.io.path.Path
 import kotlin.io.path.pathString
 
-class AnsibleLintCommandLineWSL(private val settings: AnsibleLintSettings = AnsibleLintSettings(), projectBasePath: String) : AnsibleLintCommandLine() {
+class AnsibleLintCommandLineWSL(private val settings: AnsibleLintSettings = AnsibleLintSettings()) : AnsibleLintCommandLine() {
     inner class WSLPathException(path: String) : Exception("Unable to create WSL-path for: $path")
 
-    private val wslDistribution = WSLDistribution(projectBasePath)
+    private val wslDistributionManager = WslDistributionManager.getInstance()
+
+    private var wslDistribution: WSLDistribution
+
+    init {
+        var wslDistributionIdToUse = wslDistributionManager.installedDistributions.first().id
+
+        if (settings.wslDistributionId != null) {
+            if (wslDistributionManager.installedDistributions.firstOrNull { it.id == settings.wslDistributionId } != null) {
+                wslDistributionIdToUse = settings.wslDistributionId!!
+            }
+        }
+
+        wslDistribution = WSLDistribution(wslDistributionIdToUse)
+    }
 
     override fun createVersionCheckProcess(): Process {
         return GeneralCommandLine()
             .withEnvironment(System.getenv())
             .withExePath(WSL_EXE)
             .withParameters(listOf(
+                "--distribution", wslDistribution.id,
                 settings.executable,
                 "--nocolor",
                 "--version"
@@ -31,6 +48,7 @@ class AnsibleLintCommandLineWSL(private val settings: AnsibleLintSettings = Ansi
         yamlFilePath: String
     ): Process {
         val parameters = mutableListOf(
+            "--distribution", wslDistribution.id,
             settings.executable,
             "-q",
             "--parseable",
@@ -68,9 +86,5 @@ class AnsibleLintCommandLineWSL(private val settings: AnsibleLintSettings = Ansi
             .withExePath(WSL_EXE)
             .withParameters(parameters)
             .createProcess()
-    }
-
-    companion object {
-        const val WSL_EXE = "wsl.exe"
     }
 }

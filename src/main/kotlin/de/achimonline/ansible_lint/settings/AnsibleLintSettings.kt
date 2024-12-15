@@ -6,5 +6,6 @@ data class AnsibleLintSettings(
     var onlyRunWhenConfigFilePresent: Boolean = true,
     var visualizeIgnoredRules: Boolean = true,
     var lintFilesInsideExcludedPaths: Boolean = false,
-    var useWsl: Boolean = false
+    var useWsl: Boolean = false,
+    var wslDistributionId: String? = null
 )

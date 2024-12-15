@@ -1,7 +1,7 @@
 package de.achimonline.ansible_lint.settings
 
 import com.intellij.execution.ExecutionException
-import com.intellij.ide.impl.ProjectUtil
+import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
@@ -9,17 +9,14 @@ import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.util.SystemInfo
 import com.intellij.ui.ColorUtil
 import com.intellij.ui.JBColor
-import com.intellij.ui.dsl.builder.AlignX
-import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.ui.dsl.builder.bindText
-import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.components.JBCheckBox
+import com.intellij.ui.dsl.builder.*
 import de.achimonline.ansible_lint.bundle.AnsibleLintBundle.message
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLine
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLineUnix
 import de.achimonline.ansible_lint.command.AnsibleLintCommandLineWSL
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileConfig
 import de.achimonline.ansible_lint.command.file.AnsibleLintCommandFileIgnore
-import de.achimonline.ansible_lint.common.AnsibleLintHelper
 import de.achimonline.ansible_lint.settings.AnsibleLintConfigurable.TestState.*
 import javax.swing.JButton
 import javax.swing.JEditorPane
@@ -32,6 +29,7 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
 
     private lateinit var testButton: JButton
     private lateinit var testStatusText: JEditorPane
+    private lateinit var useWsl: Cell<JBCheckBox>
 
     private val heartIcon = IconLoader.getIcon("/icons/heart-solid.svg", AnsibleLintConfigurable::class.java)
 
@@ -50,18 +48,40 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                         executeTest()
                     }.component
                 }
+
                 row {
-                    checkBox(message("settings.group.executable.use-wsl"))
+                    useWsl = checkBox(message("settings.group.executable.use-wsl"))
                         .comment(message("settings.group.executable.use-wsl.comment"))
                         .enabled(SystemInfo.isWindows)
                         .bindSelected(settings::useWsl)
 
                     comment("<icon src='AllIcons.General.Warning'>&nbsp;${message("settings.group.executable.use-wsl.experimental")}")
                 }
+
+                indent {
+                    row {
+                        label(message("settings.group.executable.use-wsl.distribution"))
+
+                        if (SystemInfo.isWindows) {
+                            val installedWslDistributions =  WslDistributionManager.getInstance().installedDistributions
+
+                            if (settings.wslDistributionId == null) {
+                                settings.wslDistributionId = installedWslDistributions.first().id
+                            }
+
+                            comboBox(installedWslDistributions.map { it.msId })
+                                .bindItem(settings::wslDistributionId.toNullableProperty())
+                        } else {
+                            comboBox(emptyList())
+                        }
+                    }
+                }.visibleIf(useWsl.selected)
+
                 row {
                     testStatusText = comment("").component
                 }
             }
+
             group(message("settings.group.options")) {
                 row {
                     checkBox(message("settings.group.options.offline"))
@@ -69,6 +89,7 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                         .bindSelected(settings::offline)
                 }
             }
+
             group(message("settings.group.integration")) {
                 row {
                     checkBox(message("settings.group.integration.only-run-when-config-file-present"))
@@ -83,6 +104,7 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
 
                     comment("<icon src='AllIcons.General.Information'>&nbsp;${message("settings.group.integration.only-run-when-config-file-present.recommended")}")
                 }
+
                 row {
                     checkBox(message("settings.group.integration.visualize-ignored-rules"))
                         .comment(
@@ -100,6 +122,7 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
                         .bindSelected(settings::lintFilesInsideExcludedPaths)
                 }
             }
+
             group {
                 row {
                     icon(heartIcon)
@@ -123,10 +146,8 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
         testStatusText.text = ""
 
         try {
-            val projectBasePath = AnsibleLintHelper.getProjectBasePath(ProjectUtil.getActiveProject()!!)
-
             val versionCheckProcess = if (settings.useWsl) {
-                AnsibleLintCommandLineWSL(settings, projectBasePath).createVersionCheckProcess()
+                AnsibleLintCommandLineWSL(settings).createVersionCheckProcess()
             } else {
                 AnsibleLintCommandLineUnix(settings).createVersionCheckProcess()
             }
