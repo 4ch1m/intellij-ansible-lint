@@ -9,12 +9,12 @@ version = property("pluginVersion")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.1.0"
+    id("org.jetbrains.kotlin.jvm") version "2.1.10"
     id("org.jetbrains.intellij.platform") version "2.2.1"
     id("org.jetbrains.changelog") version "2.2.1"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
     id("org.jsonschema2pojo") version "1.2.2"
-    id("com.github.ben-manes.versions") version "0.51.0"
+    id("com.github.ben-manes.versions") version "0.52.0"
 }
 
 repositories {
@@ -32,20 +32,19 @@ dependencies {
             providers.gradleProperty("platformVersion")
         )
 
-        instrumentationTools()
         pluginVerifier()
         zipSigner()
         testFramework(TestFrameworkType.Platform)
     }
 
-    implementation("com.charleskorn.kaml:kaml-jvm:0.66.0")
+    implementation("com.charleskorn.kaml:kaml-jvm:0.72.0")
     implementation("io.github.z4kn4fein:semver-jvm:2.0.0")
 
     testImplementation(kotlin("test"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
-    testImplementation("io.mockk:mockk:1.13.13")
+    testImplementation("io.mockk:mockk:1.13.16")
 
     testRuntimeOnly("junit:junit:4.13.2") // see: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-faq.html#junit5-test-framework-refers-to-junit4
 }
