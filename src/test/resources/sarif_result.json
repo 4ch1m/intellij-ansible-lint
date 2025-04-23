@@ -6,7 +6,7 @@
             "tool": {
                 "driver": {
                     "name": "ansible-lint",
-                    "version": "25.1.2",
+                    "version": "25.2.1",
                     "informationUri": "https://github.com/ansible/ansible-lint",
                     "rules": [
                         {
@@ -124,7 +124,8 @@
                                     "uriBaseId": "SRCROOT"
                                 },
                                 "region": {
-                                    "startLine": 1
+                                    "startLine": 1,
+                                    "startColumn": 9
                                 }
                             }
                         }
@@ -144,7 +145,8 @@
                                     "uriBaseId": "SRCROOT"
                                 },
                                 "region": {
-                                    "startLine": 6
+                                    "startLine": 7,
+                                    "startColumn": 7
                                 }
                             }
                         }
@@ -164,7 +166,8 @@
                                     "uriBaseId": "SRCROOT"
                                 },
                                 "region": {
-                                    "startLine": 10
+                                    "startLine": 10,
+                                    "startColumn": 13
                                 }
                             }
                         }
