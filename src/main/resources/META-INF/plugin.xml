@@ -31,7 +31,7 @@
                 key="notifications.group.title"/>
 
         <!--suppress PluginXmlValidity -->
-        <statusBarWidgetFactory id="pythonInterpreterWidget"
+        <statusBarWidgetFactory id="AnsibleLint"
                                 implementation="de.achimonline.ansible_lint.statusbar.AnsibleLintStatusBarWidgetFactory"
                                 order="after CodeStyleStatusBarWidget"/>
     </extensions>
