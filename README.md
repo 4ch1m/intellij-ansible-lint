@@ -133,7 +133,7 @@ Please read the [license](LICENSE) file.
 ## Credits
 
 * _Ansible_ logo - [simpleicons.org](https://simpleicons.org/?q=ansible)
-* _Check_ pictogram - [Bootstrap Icons](https://icons.getbootstrap.com/icons/check-circle-fill/)
+* _Magnifying Glass_ pictogram - [FontAwesome](https://fontawesome.com/icons/magnifying-glass?f=classic&s=solid)
 * _Heart_ icon - [FontAwesome](https://fontawesome.com/icons/heart?s=solid&f=classic)
 
 ## Donate

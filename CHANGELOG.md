@@ -1,3 +1,9 @@
+## [1.11.2]
+
+### Changed
+- new plugin icon
+- dependency updates
+
 ## [1.11.1]
 
 ### Changed

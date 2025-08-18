@@ -9,10 +9,10 @@ version = property("pluginVersion")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.2.0"
-    id("org.jetbrains.intellij.platform") version "2.7.0"
+    id("org.jetbrains.kotlin.jvm") version "2.2.10"
+    id("org.jetbrains.intellij.platform") version "2.7.2"
     id("org.jetbrains.changelog") version "2.4.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.10"
     id("org.jsonschema2pojo") version "1.2.2"
     id("com.github.ben-manes.versions") version "0.52.0"
 }
@@ -37,7 +37,7 @@ dependencies {
         testFramework(TestFrameworkType.Platform)
     }
 
-    implementation("com.charleskorn.kaml:kaml-jvm:0.85.0")
+    implementation("com.charleskorn.kaml:kaml-jvm:0.92.0")
     implementation("io.github.z4kn4fein:semver-jvm:3.0.0")
 
     testImplementation(kotlin("test"))
