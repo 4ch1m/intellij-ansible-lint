@@ -1,3 +1,10 @@
+## [1.11.3]
+
+### Changed
+- updated test-tools/-resources
+- Gradle-wrapper update
+- dependency updates
+
 ## [1.11.2]
 
 ### Changed
