@@ -3,6 +3,7 @@ package de.achimonline.ansible_lint.settings
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.wsl.WslDistributionManager
 import com.intellij.openapi.diagnostic.logger
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.ui.DialogPanel
 import com.intellij.openapi.util.IconLoader
@@ -37,7 +38,9 @@ class AnsibleLintConfigurable : BoundConfigurable(message("settings.display.name
         return panel {
             group(message("settings.group.executable")) {
                 row {
-                    textFieldWithBrowseButton()
+                    textFieldWithBrowseButton(
+                        fileChooserDescriptor = FileChooserDescriptorFactory.createSingleFileOrExecutableAppDescriptor()
+                    )
                         .resizableColumn()
                         .align(AlignX.FILL)
                         .label(message("settings.group.executable.command"))

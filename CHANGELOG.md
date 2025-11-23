@@ -1,3 +1,11 @@
+## [1.11.4]
+
+### Changed
+- minor improvements in settings dialog
+- updated test-tools/-resources
+- Gradle-wrapper update
+- dependency updates
+
 ## [1.11.3]
 
 ### Changed

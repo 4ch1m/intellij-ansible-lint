@@ -22,6 +22,7 @@ docker \
   --interactive \
   --tty \
   --rm \
+  --pull always \
   --volume "${SCRIPT_PATH}/${PLAYBOOK_FILE}":/tmp/${PLAYBOOK_FILE} \
   --volume "${SCRIPT_PATH}/output":/tmp/output \
   --workdir /tmp \
