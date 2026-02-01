@@ -28,7 +28,7 @@ class AnsibleLintParserTest {
         assertNull(ansibleLintItem.endLine)
         assertNull(ansibleLintItem.endColumn)
         assertEquals("All tasks and plays should have a distinct name for readability and for ``--start-at-task`` to work", ansibleLintItem.helpText)
-        assertEquals("https://ansible.readthedocs.io/projects/lint/rules/name/", ansibleLintItem.helpUri)
+        assertEquals("https://docs.ansible.com/projects/lint/rules/name/", ansibleLintItem.helpUri)
         assertEquals(HighlightSeverity.WARNING, ansibleLintItem.severity)
     }
 
