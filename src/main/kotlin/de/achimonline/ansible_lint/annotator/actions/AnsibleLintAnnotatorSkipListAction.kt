@@ -13,7 +13,7 @@ class AnsibleLintAnnotatorSkipListAction(private val rule: String) :
     override fun invoke(project: Project, editor: Editor?, file: PsiFile?) {
         file?.let {
             AnsibleLintCommandFileConfig(project).addRuleToSkipList(rule)
-            DaemonCodeAnalyzer.getInstance(project).restart()
+            DaemonCodeAnalyzer.getInstance(project).restart(this)
         }
     }
 

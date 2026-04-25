@@ -9,12 +9,12 @@ version = property("pluginVersion")
 
 plugins {
     id("java")
-    id("org.jetbrains.kotlin.jvm") version "2.3.0"
-    id("org.jetbrains.intellij.platform") version "2.11.0"
+    id("org.jetbrains.kotlin.jvm") version "2.3.21"
+    id("org.jetbrains.intellij.platform") version "2.15.0"
     id("org.jetbrains.changelog") version "2.5.0"
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.0"
-    id("org.jsonschema2pojo") version "1.2.2"
-    id("com.github.ben-manes.versions") version "0.53.0"
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.3.21"
+    id("org.jsonschema2pojo") version "1.3.3"
+    id("com.github.ben-manes.versions") version "0.54.0"
 }
 
 repositories {
@@ -38,8 +38,8 @@ dependencies {
 
     testImplementation(kotlin("test"))
 
-    testImplementation("org.junit.jupiter:junit-jupiter:6.0.2")
-    testImplementation("org.mockito.kotlin:mockito-kotlin:6.2.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:6.0.3")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:6.3.0")
     testImplementation("io.mockk:mockk:1.14.9")
 
     testRuntimeOnly("junit:junit:4.13.2") // see: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-faq.html#junit5-test-framework-refers-to-junit4
@@ -109,7 +109,7 @@ jsonSchema2Pojo {
 }
 
 kotlin {
-    jvmToolchain(property("kotlinJvmTarget").toInt())
+    jvmToolchain(property("kotlin.jvm.target").toInt())
 }
 
 tasks {
