@@ -10,7 +10,6 @@ SARIF_OUTPUT_FILE="sarif_result.json"
 
 LINT_CMD+="ansible-lint "
 LINT_CMD+="-q "
-LINT_CMD+="--parseable "
 LINT_CMD+="--format sarif "
 LINT_CMD+="${PLAYBOOK_FILE} "
 
